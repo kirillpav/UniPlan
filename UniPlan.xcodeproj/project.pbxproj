@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		E8F671CB2CD5E5AB00E26938 /* todo.md in Resources */ = {isa = PBXBuildFile; fileRef = E8F671CA2CD5E5A500E26938 /* todo.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		E8F433E02CD56C13002319FE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +31,7 @@
 		E8F433CF2CD56C12002319FE /* UniPlan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UniPlan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8F433DF2CD56C13002319FE /* UniPlanTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UniPlanTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8F433E92CD56C13002319FE /* UniPlanUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UniPlanUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E8F671CA2CD5E5A500E26938 /* todo.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = todo.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -75,6 +80,7 @@
 		E8F433C62CD56C12002319FE = {
 			isa = PBXGroup;
 			children = (
+				E8F671CA2CD5E5A500E26938 /* todo.md */,
 				E8F433D12CD56C12002319FE /* UniPlan */,
 				E8F433E22CD56C13002319FE /* UniPlanTests */,
 				E8F433EC2CD56C13002319FE /* UniPlanUITests */,
@@ -215,6 +221,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8F671CB2CD5E5AB00E26938 /* todo.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

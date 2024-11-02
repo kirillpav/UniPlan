@@ -56,7 +56,7 @@ struct ContentView: View {
     var semesterGrid: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 16)], spacing: 16) {
             ForEach(viewModel.semesters){
-                semester in NavigationLink(destination: SemesterView(semester: semester)) {
+                semester in NavigationLink(destination: SemesterDetailView(semester: semester)) {
                     SemesterCard(semester: semester)
                 }
             }
@@ -93,8 +93,30 @@ struct SemesterCard: View {
 }
 
 struct AddSemesterCard: View {
-    
+    var body: some View {
+            ZStack {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(backgroundColor)
+                
+                RoundedRectangle(cornerRadius: 12)
+                    .strokeBorder(style: StrokeStyle(lineWidth: 2, dash: [5]))
+                    .foregroundColor(.white.opacity(0.3))
+                
+                VStack(spacing: 8) {
+                    Image(systemName: "plus.circle")
+                        .font(.largeTitle)
+                        .foregroundColor(.white)
+                    
+                    Text("Add Semester")
+                        .font(.headline)
+                        .foregroundStyle(.white)
+                }
+                .padding()
+            }
+            .aspectRatio(1, contentMode: .fit)
+        }
 }
+
 
 #Preview {
     ContentView()
