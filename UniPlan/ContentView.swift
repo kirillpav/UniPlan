@@ -14,20 +14,17 @@ struct ContentView: View {
     @StateObject private var viewModel = SemesterViewModel()
     @State private var showingAddSemester = false
     
-    let semesters = ["Fall '24", "Summer '24", "Spring '24"]
-    
     var body: some View {
-        
-        VStack(alignment: .leading, spacing: 16){
-            Text("Semesters")
-                .font(.title)
-                .fontWeight(.bold)
-                .padding(.horizontal)
-            semesterGrid
+        NavigationStack{
+            VStack(alignment: .leading, spacing: 16){
+                Text("Semesters")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .padding(.horizontal)
+                semesterGrid
+            }
+            
         }
-        .padding()
-        
-        
         
         TabView {
             
@@ -56,7 +53,9 @@ struct ContentView: View {
     var semesterGrid: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 16)], spacing: 16) {
             ForEach(viewModel.semesters){
-                semester in NavigationLink(destination: SemesterDetailView(semester: semester)) {
+                semester in NavigationLink {
+                    SemesterDetailView(semester: semester)
+                } label: {
                     SemesterCard(semester: semester)
                 }
             }
@@ -80,7 +79,7 @@ struct SemesterCard: View {
             RoundedRectangle(cornerRadius: 12).fill(backgroundColor)
             
             RoundedRectangle(cornerRadius: 12)
-                .foregroundColor(.white.opacity(0.3))
+                .foregroundColor(backgroundColor)
             
             VStack(spacing: 8) {
                 Text(semester.title)
