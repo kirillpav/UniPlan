@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Assignment {
+struct Assignment: Identifiable {
     let id: UUID
     var title: String
     var description: String

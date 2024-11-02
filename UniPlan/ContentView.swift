@@ -11,13 +11,19 @@ let backgroundColor = Color(red: 0.157, green: 0.157, blue: 0.169)
 
 struct ContentView: View {
     
+    @StateObject private var viewModel = SemesterViewModel()
+    @State private var showingAddSemester = false
+    
     let semesters = ["Fall '24", "Summer '24", "Spring '24"]
     
     var body: some View {
         
-        VStack{
-            Text("Your Semesters: ")
-            semesterCard
+        VStack(alignment: .leading, spacing: 16){
+            Text("Semesters")
+                .font(.title)
+                .fontWeight(.bold)
+                .padding(.horizontal)
+            semesterGrid
         }
         .padding()
         
@@ -26,19 +32,19 @@ struct ContentView: View {
         TabView {
             
             Tab("HOME", systemImage: "house") {
-                
+                // HomeView()
             }
             
             Tab("TASKS", systemImage: "checklist") {
-                
+                //                TaskView()
             }
             
             Tab("SEARCH", systemImage: "magnifyingglass"){
-                
+                //                SearchView()
             }
             
             Tab("Account", systemImage: "person.crop.circle.fill") {
-                
+                //                AccountView()
             }
         }
         .tint(.black)
@@ -46,33 +52,48 @@ struct ContentView: View {
             UITabBar.appearance().unselectedItemTintColor = .gray
         }
     }
-    var semesterCard: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))]) {
-            ForEach(0..<semesters.count, id: \.self){
-                index in SemesterView(content: semesters[index])
-                    .aspectRatio(1, contentMode: .fit)
-            }
-            
-        }
-    }
     
+    var semesterGrid: some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 16)], spacing: 16) {
+            ForEach(viewModel.semesters){
+                semester in NavigationLink(destination: SemesterView(semester: semester)) {
+                    SemesterCard(semester: semester)
+                }
+            }
+            Button(action: {showingAddSemester = true}) {
+                AddSemesterCard()
+            }
+        }
+        .padding()
+        //        .sheet()
+    }
 }
 
 
-struct SemesterView: View {
-    let content: String
-    
+struct SemesterCard: View {
+    let semester: Semester
     
     var body: some View {
         ZStack {
-            let base = RoundedRectangle(cornerRadius: 12)
-            Group{
-                base.fill(backgroundColor)
-                base.strokeBorder(lineWidth: 2)
-                Text(content).foregroundStyle(.white)
+            RoundedRectangle(cornerRadius: 12).fill(backgroundColor)
+            
+            RoundedRectangle(cornerRadius: 12)
+                .strokeBorder(lineWidth: 2)
+                .foregroundColor(.white.opacity(0.3))
+            
+            VStack(spacing: 8) {
+                Text(semester.title)
+                    .font(.headline)
+                    .foregroundStyle(.white)
             }
+            .padding()
         }
+        .aspectRatio(1, contentMode: .fit)
     }
+}
+
+struct AddSemesterCard: View {
+    
 }
 
 #Preview {
