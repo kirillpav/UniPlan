@@ -36,6 +36,6 @@ struct SemesterDetailView: View {
     }
 }
 
-//#Preview {
+#Preview {
 //    SemesterDetailView()
-//}
+}

@@ -65,7 +65,9 @@ struct ContentView: View {
             }
         }
         .padding()
-        //        .sheet()
+        .sheet(isPresented: $showingAddSemester) {
+            AddSemesterView(viewModel: viewModel)
+        }
     }
 }
 
@@ -78,7 +80,6 @@ struct SemesterCard: View {
             RoundedRectangle(cornerRadius: 12).fill(backgroundColor)
             
             RoundedRectangle(cornerRadius: 12)
-                .strokeBorder(lineWidth: 2)
                 .foregroundColor(.white.opacity(0.3))
             
             VStack(spacing: 8) {
@@ -99,8 +100,7 @@ struct AddSemesterCard: View {
                     .fill(backgroundColor)
                 
                 RoundedRectangle(cornerRadius: 12)
-                    .strokeBorder(style: StrokeStyle(lineWidth: 2, dash: [5]))
-                    .foregroundColor(.white.opacity(0.3))
+                    .foregroundColor(backgroundColor)
                 
                 VStack(spacing: 8) {
                     Image(systemName: "plus.circle")
