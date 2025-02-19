@@ -16,6 +16,7 @@ struct AddSemesterView: View {
     @State private var endDate = Date()
     
     var body: some View {
+        
         NavigationView {
             Form {
                 Section(header: Text("Semester Information")){
@@ -38,6 +39,7 @@ struct AddSemesterView: View {
                     }
                     .disabled(title.isEmpty || endDate <= startDate)
                 }
+                
             }
             
         }

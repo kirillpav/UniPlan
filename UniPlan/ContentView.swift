@@ -16,19 +16,30 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack{
-            VStack(alignment: .leading, spacing: 16){
+            VStack(alignment: .leading, spacing: 0) {
                 Text("Semesters")
-                    .font(.title)
                     .fontWeight(.bold)
                     .padding(.horizontal)
-                semesterGrid
+                    .padding(.top)
+                HStack {
+                    BasicDropdownMenu(viewModel: viewModel).padding()
+                    // semesterGrid
+                    Button(action: {showingAddSemester = true}) {
+                        AddSemesterCard()
+                    }
+                    .padding(.trailing)
+                }
+                .sheet(isPresented: $showingAddSemester) {
+                    AddSemesterView(viewModel: viewModel)
+                }
+                
             }
-            
+            .padding(.top, 1)
         }
         
         TabView {
             
-            Tab("HOME", systemImage: "house") {
+            Tab("DASHBOARD", systemImage: "house") {
                 // HomeView()
             }
             
@@ -50,30 +61,13 @@ struct ContentView: View {
         }
     }
     
-    var semesterGrid: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 16)], spacing: 16) {
-            ForEach(viewModel.semesters){
-                semester in NavigationLink {
-                    SemesterDetailView(semester: semester)
-                } label: {
-                    SemesterCard(semester: semester)
-                }
-            }
-            Button(action: {showingAddSemester = true}) {
-                AddSemesterCard()
-            }
-        }
-        .padding()
-        .sheet(isPresented: $showingAddSemester) {
-            AddSemesterView(viewModel: viewModel)
-        }
-    }
+    
+    
 }
 
 
 struct SemesterCard: View {
     let semester: Semester
-    
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 12).fill(backgroundColor)
@@ -101,20 +95,59 @@ struct AddSemesterCard: View {
                 RoundedRectangle(cornerRadius: 12)
                     .foregroundColor(backgroundColor)
                 
-                VStack(spacing: 8) {
+                HStack {
                     Image(systemName: "plus.circle")
-                        .font(.largeTitle)
+                        .font(.title2)
                         .foregroundColor(.white)
                     
-                    Text("Add Semester")
+                    Text("Add")
                         .font(.headline)
                         .foregroundStyle(.white)
                 }
                 .padding()
             }
-            .aspectRatio(1, contentMode: .fit)
+            .frame(height: 40)
         }
 }
+
+struct BasicDropdownMenu: View {
+    @State private var selectedOption: String = "Select a semester"
+    @ObservedObject var viewModel: SemesterViewModel
+    
+    var body: some View {
+        Menu {
+            ForEach(viewModel.semesters) { semester in 
+                Button(action: { 
+                    selectedOption = semester.title 
+                }) {
+                    Text(semester.title)
+                        .foregroundColor(.black)
+                }
+            }
+        } label: {
+            Label(selectedOption, systemImage: "chevron.down")
+                .padding()
+                .frame(width: 200)
+                .background(backgroundColor)
+                .foregroundColor(.white)
+                .cornerRadius(12)
+        }
+    }
+}
+
+//struct ClassRow: View {
+//    let scheduleItem: Class
+//    
+//    private let timeFormatter: DateFormatter = {
+//        let formatter = DateFormatter()
+//        formatter.timeStyle = .short
+//        return formatter
+//    }()
+//    
+//    var body: some View {
+//        
+//    }
+//}
 
 
 #Preview {
