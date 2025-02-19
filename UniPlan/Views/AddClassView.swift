@@ -5,7 +5,7 @@ struct AddClassView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
 
-    @StateObject private var classViewModel = ClassViewModel()
+    @ObservedObject var classViewModel: ClassViewModel
 
     @State private var title: String = ""
     @State private var instructor: String = ""

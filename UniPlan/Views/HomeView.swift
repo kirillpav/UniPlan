@@ -33,7 +33,10 @@ struct HomeView: View {
         }
         .padding()
         .sheet(isPresented: $showAddClassView) {
-            AddClassView()
+            AddClassView(classViewModel: classViewModel)
+        }
+        .onAppear {
+            classViewModel.fetchClasses()
         }
         
     }
