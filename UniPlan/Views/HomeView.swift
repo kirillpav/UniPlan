@@ -16,7 +16,7 @@ struct HomeView: View {
                 
                 LazyVGrid(columns: columns, spacing: 10) {
                     ForEach(classViewModel.classes) { currentClass in
-                        ClassCard(title: currentClass.title, instructor: currentClass.instructor, instructorEmail: currentClass.instructorEmail)
+                        ClassCard(title: currentClass.title, instructor: currentClass.instructor, instructorEmail: currentClass.instructorEmail, numberOfAssignments: currentClass.assignments.count)
                             .padding()
                     }
                 }

@@ -13,12 +13,14 @@ struct Assignment: Identifiable, Codable {
     var description: String
     var dueDate: Date
     var isCompleted: Bool
+    var classId: UUID
     
-    init(id: UUID, title: String, description: String, dueDate: Date, isCompleted: Bool) {
+    init(id: UUID, title: String, description: String, dueDate: Date, isCompleted: Bool, classId: UUID) {
         self.id = id
         self.title = title
         self.description = description
         self.dueDate = dueDate
         self.isCompleted = isCompleted
+        self.classId = classId
     }
 }

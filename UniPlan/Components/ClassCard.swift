@@ -5,12 +5,13 @@ struct ClassCard: View {
     var title: String
     var instructor: String
     var instructorEmail: String
+    var numberOfAssignments: Int
     
     var body: some View {
         ZStack {
             // Background
             RoundedRectangle(cornerRadius: 10)
-                .fill(.green)
+                .fill(.orange)
                 .frame(height: 160)
                 .shadow(radius: 5)
 
@@ -21,8 +22,6 @@ struct ClassCard: View {
                             .foregroundColor(.yellow)
                     }
                     Spacer()
-                    Image(systemName: "arrow.up.right.circle.fill")
-                        .foregroundColor(.white)
                 }
                 
                 // Title
@@ -35,6 +34,11 @@ struct ClassCard: View {
                 Text(instructor)
                     .font(.footnote)
                     .foregroundColor(.white.opacity(0.8))
+                Text("\(numberOfAssignments) Items Due")
+                    .font(.footnote)
+                    .foregroundColor(.white.opacity(0.8))
+
+                
 
                 Spacer()
             }
