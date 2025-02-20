@@ -1,13 +1,16 @@
 import SwiftUI
 
 struct ClassCard: View {
-
+    
+    var classId: UUID
     var title: String
     var instructor: String
     var instructorEmail: String
     var numberOfAssignments: Int
     
     var body: some View {
+        NavigationLink(destination: ClassDetailView(classId: classId)) {
+
         ZStack {
             // Background
             RoundedRectangle(cornerRadius: 10)
@@ -37,15 +40,13 @@ struct ClassCard: View {
                 Text("\(numberOfAssignments) Items Due")
                     .font(.footnote)
                     .foregroundColor(.white.opacity(0.8))
-
-                
-
                 Spacer()
             }
             .padding()
         }
         .frame(height: 160)
         .frame(width: 160)
+        }
     }
 }
 
