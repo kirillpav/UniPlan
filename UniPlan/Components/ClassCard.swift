@@ -9,43 +9,44 @@ struct ClassCard: View {
     var numberOfAssignments: Int
     
     var body: some View {
-        NavigationLink(destination: ClassDetailView(classId: classId)) {
-
-        ZStack {
-            // Background
-            RoundedRectangle(cornerRadius: 10)
-                .fill(.orange)
-                .frame(height: 160)
-                .shadow(radius: 5)
-
-            VStack(alignment: .leading, spacing: 10) {
-                HStack {
+        NavigationLink {
+            ClassDetailView(classId: classId, title: title, instructor: instructor, instructorEmail: instructorEmail, numberOfAssignments: numberOfAssignments)
+        } label: {
+            ZStack {
+                // Background
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(.orange)
+                    .frame(height: 160)
+                    .shadow(radius: 5)
+                
+                VStack(alignment: .leading, spacing: 10) {
                     HStack {
-                        Image(systemName: "star.fill")
-                            .foregroundColor(.yellow)
+                        HStack {
+                            Image(systemName: "star.fill")
+                                .foregroundColor(.yellow)
+                        }
+                        Spacer()
                     }
+                    
+                    // Title
+                    Text(title)
+                        .font(.title3)
+                        .bold()
+                        .foregroundColor(.white)
+                    
+                    // Course Details
+                    Text(instructor)
+                        .font(.footnote)
+                        .foregroundColor(.white.opacity(0.8))
+                    Text("\(numberOfAssignments) Items Due")
+                        .font(.footnote)
+                        .foregroundColor(.white.opacity(0.8))
                     Spacer()
                 }
-                
-                // Title
-                Text(title)
-                    .font(.title3)
-                    .bold()
-                    .foregroundColor(.white)
-
-                // Course Details
-                Text(instructor)
-                    .font(.footnote)
-                    .foregroundColor(.white.opacity(0.8))
-                Text("\(numberOfAssignments) Items Due")
-                    .font(.footnote)
-                    .foregroundColor(.white.opacity(0.8))
-                Spacer()
+                .padding()
             }
-            .padding()
-        }
-        .frame(height: 160)
-        .frame(width: 160)
+            .frame(height: 160)
+            .frame(width: 160)
         }
     }
 }

@@ -9,10 +9,11 @@ import Foundation
 
 struct Assignment: Identifiable, Codable {
     let id: UUID
+    var classId: UUID
     var title: String
     var dueDate: Date
     var isCompleted: Bool
-    var classId: UUID
+    
     
     init(id: UUID, title: String, dueDate: Date, isCompleted: Bool, classId: UUID) {
         self.id = id
