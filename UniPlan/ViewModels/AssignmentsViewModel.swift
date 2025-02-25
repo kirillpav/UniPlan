@@ -14,7 +14,7 @@ class AssignmentsViewModel: ObservableObject {
         fetchAssignments()
     }
     
-    private func saveAssignments() {
+    func saveAssignments() {
         let encoder = JSONEncoder()
         if let encoded = try? encoder.encode(assignments) {
             UserDefaults.standard.set(encoded, forKey: "assignments")
@@ -26,7 +26,7 @@ class AssignmentsViewModel: ObservableObject {
         saveAssignments()
     }
 
-    private func fetchAssignments() {
+    func fetchAssignments() {
         if let encoded = UserDefaults.standard.data(forKey: "assignments") {
             if let decoded = try? JSONDecoder().decode([Assignment].self, from: encoded) {
                 assignments = decoded
@@ -34,6 +34,14 @@ class AssignmentsViewModel: ObservableObject {
         }
     }
     
-    
+    func toggleAssignmentCompletion(assignmentId: UUID) {
+        if let index = assignments.firstIndex(where: { $0.id == assignmentId}) {
+            var updatedAssignment = assignments[index]
+            updatedAssignment.isCompleted.toggle()
+
+            assignments[index] = updatedAssignment
+            saveAssignments()
+        }
+    }
     
 }

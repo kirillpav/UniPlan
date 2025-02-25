@@ -2,7 +2,9 @@ import SwiftUI
 
 struct HomeView: View {
     @StateObject private var classViewModel = ClassViewModel()
+    @StateObject private var assignmentsViewModel = AssignmentsViewModel()
     @State private var showAddClassView = false
+
     var body: some View {
         NavigationStack {
             VStack {
@@ -14,10 +16,10 @@ struct HomeView: View {
                 
                 ScrollView {
                     let columns = [GridItem(.flexible()), GridItem(.flexible())]
-                    
                     LazyVGrid(columns: columns, spacing: 10) {
                         ForEach(classViewModel.classes) { currentClass in
-                            ClassCard(classId: currentClass.id,title: currentClass.title, instructor: currentClass.instructor, instructorEmail: currentClass.instructorEmail, numberOfAssignments: currentClass.assignments.count)
+                            let assignmentCount = assignmentsViewModel.assignments.filter { $0.classId == currentClass.id }.count
+                            ClassCard(classId: currentClass.id,title: currentClass.title, instructor: currentClass.instructor, instructorEmail: currentClass.instructorEmail, numberOfAssignments: assignmentCount)
                                 .padding()
                         }
                     }
@@ -38,6 +40,7 @@ struct HomeView: View {
             }
             .onAppear {
                 classViewModel.fetchClasses()
+                assignmentsViewModel.fetchAssignments()
             }
         }
     }

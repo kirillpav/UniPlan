@@ -10,6 +10,9 @@ struct ClassDetailView: View {
 
     @State private var showAddAssignmentView: Bool = false
     
+    var filteredAssignments: [Assignment] {
+        assignmentsViewModel.assignments.filter { $0.classId == classId}
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -38,22 +41,41 @@ struct ClassDetailView: View {
             } else {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 12) {
-                        ForEach(assignmentsViewModel.assignments) { assignment in
-                            HStack(spacing: 12) {
-                                Circle()
-                                    .strokeBorder(Color.primary, lineWidth: 1)
-                                    .frame(width: 20, height: 20)
-                                
-                                Text(assignment.title)
-                                    .fontWeight(.medium)
-                                
-                                Spacer()
+                        ForEach(filteredAssignments) { assignment in 
+                            Button(action: {
+                                if let index = assignmentsViewModel.assignments.firstIndex(where: { $0.id == assignment.id}) {
+                                    assignmentsViewModel.assignments[index].isCompleted.toggle()
+                                    assignmentsViewModel.saveAssignments()
+                                }
+                            }) {
+                                HStack(spacing: 12) {
+                                    ZStack {
+                                        Circle()
+                                            .strokeBorder(Color.primary, lineWidth: 1)
+                                            .frame(width: 20, height: 20)
+                                        if assignment.isCompleted {
+                                            Circle()
+                                                .fill(Color.green)
+                                                .frame(width: 16, height: 16)
+                                        }
+                                    }
+                                    Text(assignment.title)
+                                        .fontWeight(.medium)
+                                        .foregroundColor(assignment.isCompleted ? .secondary : .primary)
+                                        .strikethrough(assignment.isCompleted)
+
+                                    Text(DateFormatter.localizedString(from: assignment.dueDate, dateStyle: .medium, timeStyle: .none))
+                                        .foregroundColor(.secondary)
+                                        .font(.subheadline)
+                                    
+                                    Spacer()
+                                }                                
                             }
                             .padding(.vertical, 8)
-                            .padding(.horizontal, 12)
-                            .background(Color(.systemBackground))
-                            .cornerRadius(8)
-                            .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
+                                .padding(.horizontal, 12)
+                                .background(Color(.systemBackground))
+                                .cornerRadius(8)
+                                .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
                         }
                     }
                     .padding(.vertical, 8)
