@@ -44,8 +44,7 @@ struct ClassCard: View {
                         .bold()
                         .foregroundColor(.white)
                 }
-                .padding(.horizontal, 20)
-                .padding(.vertical, 10)
+                .padding(20)
                 
             }
             .frame(height: 160)

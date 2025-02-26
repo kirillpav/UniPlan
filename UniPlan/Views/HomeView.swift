@@ -12,6 +12,7 @@ struct HomeView: View {
                     Text("My Courses (\(classViewModel.classes.count))").font(.largeTitle)
                     .cornerRadius(10) 
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
 
                     Button(action: {
                         showAddClassView = true
