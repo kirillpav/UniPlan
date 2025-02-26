@@ -63,12 +63,13 @@ struct ClassDetailView: View {
                                         .fontWeight(.medium)
                                         .foregroundColor(assignment.isCompleted ? .secondary : .primary)
                                         .strikethrough(assignment.isCompleted)
+                                    
+                                    Spacer()
 
                                     Text(DateFormatter.localizedString(from: assignment.dueDate, dateStyle: .medium, timeStyle: .none))
                                         .foregroundColor(.secondary)
                                         .font(.subheadline)
-                                    
-                                    Spacer()
+
                                 }                                
                             }
                             .padding(.vertical, 8)

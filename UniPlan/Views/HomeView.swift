@@ -8,33 +8,36 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                Text("My Courses (\(classViewModel.classes.count))").font(.largeTitle)
-                    .padding()
+                HStack {
+                    Text("My Courses (\(classViewModel.classes.count))").font(.largeTitle)
                     .cornerRadius(10) 
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    
+
+                    Button(action: {
+                        showAddClassView = true
+                    }) {
+                        Image(systemName: "plus")
+                            .font(.title)
+                            .padding()
+                    }
+                }
+                .padding(.horizontal)
                 
                 ScrollView {
-                    let columns = [GridItem(.flexible()), GridItem(.flexible())]
-                    LazyVGrid(columns: columns, spacing: 10) {
+                    LazyVStack(spacing: 10) {
                         ForEach(classViewModel.classes) { currentClass in
                             let assignmentCount = assignmentsViewModel.assignments.filter { $0.classId == currentClass.id }.count
                             ClassCard(classId: currentClass.id,title: currentClass.title, instructor: currentClass.instructor, instructorEmail: currentClass.instructorEmail, numberOfAssignments: assignmentCount)
-                                .padding()
+                                .padding(.horizontal, 20)
                         }
                     }
+                    .padding(.bottom)
                 }
-
-                Button(action: {
-                    showAddClassView = true
-                }) {
-                    Text("Add Class")
-                        .padding()
-                }
-                
-                
             }
-            .padding()
+            .padding(.top)
+            .safeAreaInset(edge: .bottom) {
+                Color.clear.frame(height: 20)
+            }
             .sheet(isPresented: $showAddClassView) {
                 AddClassView(classViewModel: classViewModel)
             }
