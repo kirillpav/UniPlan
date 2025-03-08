@@ -15,7 +15,7 @@ struct ClassCard: View {
             ZStack(alignment: .leading) {
                 // Background
                 RoundedRectangle(cornerRadius: 30)
-                    .fill(.orange)
+                    .fill(Color("SecondaryColor"))
                     .frame(height: 160)
                 
                 VStack(alignment: .leading, spacing: 10) {
@@ -27,22 +27,22 @@ struct ClassCard: View {
                     HStack {
                         Text("\(numberOfAssignments) Items Due")
                             .font(.headline)
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                         Spacer()
                             Image(systemName: "chevron.forward.circle.fill")
                                 .font(.title2)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                                 
                     }
                     Text(instructor)
                         .font(.subheadline)
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                     Spacer()
                     // Title
                     Text(title)
                         .font(.title2)
                         .bold()
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                 }
                 .padding(20)
                 
