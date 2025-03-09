@@ -9,6 +9,7 @@ struct ClassDetailView: View {
     @StateObject var assignmentsViewModel = AssignmentsViewModel()
     
     @State private var showAddAssignmentView: Bool = false
+    @State private var showCopiedConfirmation = false
     
     var filteredAssignments: [Assignment] {
         assignmentsViewModel.assignments.filter { $0.classId == classId }
@@ -23,15 +24,26 @@ struct ClassDetailView: View {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(title)
                                     .font(.system(size: 36, weight: .bold))
-                                    .foregroundColor(.black)
+                                    
                                 
                                 Text(instructor)
                                     .font(.headline)
-                                    .foregroundColor(.black.opacity(0.7))
-                                
-                                Text(instructorEmail)
-                                    .font(.subheadline)
-                                    .foregroundColor(.black.opacity(0.5))
+
+                                Button {
+                                    UIPasteboard.general.string = instructorEmail
+                                    withAnimation {
+                                        showCopiedConfirmation = true
+                                    }
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                        withAnimation {
+                                            showCopiedConfirmation = false
+                                        }
+                                    }
+                                } label: {
+                                    Text(instructorEmail)
+                                        .font(.subheadline)
+                                        .opacity(0.8)
+                                }
                             }
                         }
                         .padding(.bottom, 20)
@@ -44,7 +56,6 @@ struct ClassDetailView: View {
                         Text("Assignments")
                             .font(.title2)
                             .fontWeight(.bold)
-                            .foregroundColor(.black)
                         
                         Spacer()
                         
@@ -66,11 +77,11 @@ struct ClassDetailView: View {
                             
                             Image(systemName: "list.clipboard")
                                 .font(.system(size: 40))
-                                .foregroundColor(.black.opacity(0.3))
+                                .opacity(0.3)
                             
                             Text("No assignments yet")
                                 .font(.headline)
-                                .foregroundColor(.black.opacity(0.5))
+                                .opacity(0.5)
                             
                             Button(action: {
                                 showAddAssignmentView = true
@@ -115,11 +126,22 @@ struct ClassDetailView: View {
                 }
             }
             .padding(.vertical)
+            if showCopiedConfirmation {
+                            Text("Copied")
+                                .font(.headline)
+                                .padding()
+                                .background(Color.black.opacity(0.3))
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
+                                .transition(.scale.combined(with: .opacity))
+                                .zIndex(1000) // Ensure it's on top of everything
+                        }
         }
         .sheet(isPresented: $showAddAssignmentView) {
             AddAssignmentView(assignmentsViewModel: assignmentsViewModel, classId: classId)
         }
     }
+    
 }
 
 // Custom row component for assignments
@@ -143,6 +165,7 @@ struct AssignmentRow: View {
                     }
                 }
             }
+            
             
             // Assignment details
             HStack(spacing: 4) {
@@ -176,25 +199,7 @@ struct AssignmentRow: View {
     }
 }
 
-extension View {
-    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
-        clipShape(RoundedCornerShape(radius: radius, corners: corners))
-    }
-}
 
-struct RoundedCornerShape: Shape {
-    var radius: CGFloat = .infinity
-    var corners: UIRectCorner = .allCorners
-    
-    func path(in rect: CGRect) -> Path {
-        let path = UIBezierPath(
-            roundedRect: rect,
-            byRoundingCorners: corners,
-            cornerRadii: CGSize(width: radius, height: radius)
-        )
-        return Path(path.cgPath)
-    }
-}
 
 
 

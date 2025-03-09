@@ -11,7 +11,7 @@ import SwiftUI
 struct UniPlanApp: App {
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            ClassesView()
         }
     }
 }
