@@ -44,4 +44,11 @@ class AssignmentsViewModel: ObservableObject {
         }
     }
     
+    func deleteAssignment(_ assignment: Assignment) {
+        if let index = assignments.firstIndex(where: { $0.id == assignment.id }) {
+            assignments.remove(at: index)
+            saveAssignments()
+        }
+    }
+    
 }

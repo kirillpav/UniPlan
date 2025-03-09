@@ -7,103 +7,195 @@ struct ClassDetailView: View {
     var instructorEmail: String
     var numberOfAssignments: Int
     @StateObject var assignmentsViewModel = AssignmentsViewModel()
-
+    
     @State private var showAddAssignmentView: Bool = false
     
     var filteredAssignments: [Assignment] {
-        assignmentsViewModel.assignments.filter { $0.classId == classId}
+        assignmentsViewModel.assignments.filter { $0.classId == classId }
     }
-
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(title)
-                .font(.largeTitle)
-                .fontWeight(.bold)                
-            VStack {
-                Text("Instructor: \(instructor)")
-                    .foregroundColor(.secondary)
-                Text("Instructor Email: \(instructorEmail)")
-                    .foregroundColor(.secondary)
-            }
-
-            Divider()
-
-            if assignmentsViewModel.assignments.isEmpty {
-                VStack(spacing: 8) {
-                    Spacer()
-                    Text("No assignments yet")
-                        .foregroundColor(.secondary)
-                        .italic()
-                    Spacer()
-                }
-                .frame(maxWidth: .infinity)
-                .padding()
-            } else {
-                ScrollView {
-                    LazyVStack(alignment: .leading, spacing: 12) {
-                        ForEach(filteredAssignments) { assignment in 
-                            Button(action: {
-                                if let index = assignmentsViewModel.assignments.firstIndex(where: { $0.id == assignment.id}) {
-                                    assignmentsViewModel.assignments[index].isCompleted.toggle()
-                                    assignmentsViewModel.saveAssignments()
-                                }
-                            }) {
-                                HStack(spacing: 12) {
-                                    ZStack {
-                                        Circle()
-                                            .strokeBorder(Color.primary, lineWidth: 1)
-                                            .frame(width: 20, height: 20)
-                                        if assignment.isCompleted {
-                                            Circle()
-                                                .fill(Color.green)
-                                                .frame(width: 16, height: 16)
-                                        }
-                                    }
-                                    Text(assignment.title)
-                                        .fontWeight(.medium)
-                                        .foregroundColor(assignment.isCompleted ? .secondary : .primary)
-                                        .strikethrough(assignment.isCompleted)
-                                    
-                                    Spacer()
-
-                                    Text(DateFormatter.localizedString(from: assignment.dueDate, dateStyle: .medium, timeStyle: .none))
-                                        .foregroundColor(.secondary)
-                                        .font(.subheadline)
-
-                                }                                
+        ZStack {
+            VStack(alignment: .leading, spacing: 24) {
+                    // Content inside the header
+                    VStack(spacing: 8) {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(title)
+                                    .font(.system(size: 36, weight: .bold))
+                                    .foregroundColor(.black)
+                                
+                                Text(instructor)
+                                    .font(.headline)
+                                    .foregroundColor(.black.opacity(0.7))
+                                
+                                Text(instructorEmail)
+                                    .font(.subheadline)
+                                    .foregroundColor(.black.opacity(0.5))
                             }
-                            .padding(.vertical, 8)
-                                .padding(.horizontal, 12)
-                                .background(Color(.systemBackground))
-                                .cornerRadius(8)
-                                .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
+                        }
+                        .padding(.bottom, 20)
+                    }
+                    .padding(.horizontal, 24)
+                
+                // Assignments section
+                VStack {
+                    HStack {
+                        Text("Assignments")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .foregroundColor(.black)
+                        
+                        Spacer()
+                        
+                        Button(action: {
+                            showAddAssignmentView = true
+                        }) {
+                            Image(systemName: "plus")
+                                .font(.system(size: 18, weight: .medium))
+                                .foregroundColor(.black)
+                                .padding(10)
+                                .background(Circle().fill(Color("PrimaryColor")))
                         }
                     }
-                    .padding(.vertical, 8)
+                    .padding(.horizontal)
+                    
+                    if filteredAssignments.isEmpty {
+                        VStack(spacing: 16) {
+                            Spacer()
+                            
+                            Image(systemName: "list.clipboard")
+                                .font(.system(size: 40))
+                                .foregroundColor(.black.opacity(0.3))
+                            
+                            Text("No assignments yet")
+                                .font(.headline)
+                                .foregroundColor(.black.opacity(0.5))
+                            
+                            Button(action: {
+                                showAddAssignmentView = true
+                            }) {
+                                Text("Add Your First Assignment")
+                                    .font(.headline)
+                                    .foregroundColor(.black)
+                                    .padding(.vertical, 12)
+                                    .padding(.horizontal, 24)
+                                    .background(Capsule().fill(Color("PrimaryColor")))
+                            }
+                            
+                            Spacer()
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 60)
+                    } else {
+                        ScrollView {
+                            LazyVStack(spacing: 16) {
+                                ForEach(filteredAssignments) { assignment in
+                                    AssignmentRow(assignment: assignment) {
+                                        if let index = assignmentsViewModel.assignments.firstIndex(where: { $0.id == assignment.id }) {
+                                            assignmentsViewModel.assignments[index].isCompleted.toggle()
+                                            assignmentsViewModel.saveAssignments()
+                                        }
+                                    }
+                                    .listRowSeparator(.hidden)
+                                    .listRowBackground(Color.clear)
+                                    .listRowInsets(EdgeInsets())
+                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                        Button(role: .destructive) {
+                                            assignmentsViewModel.deleteAssignment(assignment)
+                                        } label: {
+                                            Label("Delete", systemImage: "trash")
+                                        }
+                                    }
+                                }
+                            }
+                            .padding()
+                        }
+                    }
                 }
             }
+            .padding(.vertical)
         }
-        .padding()
         .sheet(isPresented: $showAddAssignmentView) {
             AddAssignmentView(assignmentsViewModel: assignmentsViewModel, classId: classId)
         }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    showAddAssignmentView = true
-                }) {
-                    Image(systemName: "plus")
-                }
-            }
-        }
     }
 }
 
-struct ClassDetailView_Previews: PreviewProvider {
-    static var previews: some View {
-        ClassDetailView(classId: UUID(), title: "Test", instructor: "Test", instructorEmail: "Test", numberOfAssignments: 0)
+// Custom row component for assignments
+struct AssignmentRow: View {
+    var assignment: Assignment
+    var toggleCompletion: () -> Void
+    
+    var body: some View {
+        HStack(spacing: 16) {
+            // Completion circle
+            Button(action: toggleCompletion) {
+                ZStack {
+                    Circle()
+                        .strokeBorder(Color.black.opacity(0.6), lineWidth: 1.5)
+                        .frame(width: 24, height: 24)
+                    
+                    if assignment.isCompleted {
+                        Circle()
+                            .fill(Color.black.opacity(0.3))
+                            .frame(width: 18, height: 18)
+                    }
+                }
+            }
+            
+            // Assignment details
+            HStack(spacing: 4) {
+                Text(assignment.title)
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundColor(assignment.isCompleted ? .black.opacity(0.5) : .black)
+                    .strikethrough(assignment.isCompleted)
+                
+                Spacer()
+                
+                Text(formattedDueDate(assignment.dueDate))
+                    .font(.subheadline)
+                    .foregroundColor(.black.opacity(0.5))
+            }
+            
+            Spacer()
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color("SecondaryColor"))
+        )
+    }
+    
+    // Format the due date
+    private func formattedDueDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter.string(from: date)
     }
 }
+
+extension View {
+    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+        clipShape(RoundedCornerShape(radius: radius, corners: corners))
+    }
+}
+
+struct RoundedCornerShape: Shape {
+    var radius: CGFloat = .infinity
+    var corners: UIRectCorner = .allCorners
+    
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(
+            roundedRect: rect,
+            byRoundingCorners: corners,
+            cornerRadii: CGSize(width: radius, height: radius)
+        )
+        return Path(path.cgPath)
+    }
+}
+
 
 
 
