@@ -16,9 +16,12 @@ class ClassViewModel: ObservableObject {
         saveClasses()
     }
 
-   
-
-    
+    func deleteClass(_ course: Class) {
+        if let index = classes.firstIndex(where: { $0.id == course.id }) {
+            classes.remove(at: index)
+            saveClasses()
+        }
+    }
     
     func fetchClasses() {
         // load classes from UserDefaults

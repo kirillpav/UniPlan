@@ -4,13 +4,14 @@ struct ClassesView: View {
     @StateObject private var classViewModel = ClassViewModel()
     @StateObject private var assignmentsViewModel = AssignmentsViewModel()
     @State private var showAddClassView = false
-
+    
+    
     var body: some View {
         NavigationStack {
             VStack {
                 HStack {
                     Text("My Courses (\(classViewModel.classes.count))").font(.largeTitle)
-                    .cornerRadius(10) 
+                    .cornerRadius(10)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
 
@@ -25,9 +26,11 @@ struct ClassesView: View {
                 .padding(.horizontal)
                 
                 ScrollView {
+                    
                     LazyVStack(spacing: 10) {
                         ForEach(classViewModel.classes) { currentClass in
                             let assignmentCount = assignmentsViewModel.assignments.filter { $0.classId == currentClass.id }.count
+                            
                             ClassCard(classId: currentClass.id,title: currentClass.title, instructor: currentClass.instructor, instructorEmail: currentClass.instructorEmail, numberOfAssignments: assignmentCount)
                                 .padding(.horizontal, 20)
                         }
