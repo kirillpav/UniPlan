@@ -13,15 +13,14 @@ struct AddClassView: View {
     @State private var showError: Bool = false
     
     // Schedule states
-    @State private var startDate = Date()
     @State private var startTime = Date()
-    @State private var endTime = Date().addingTimeInterval(3600) // 1 hour later by default
-    @State private var isRecurring = false
-    @State private var recurringPattern: RecurringPattern = .weekly
+    @State private var endTime = Calendar.current.date(byAdding: .hour, value: 1, to: Date())!
     @State private var selectedDays: [Weekday] = []
+    @State private var firstDayOfInstruction = Date() // First class session
+    @State private var finalExamDate = Calendar.current.date(byAdding: .month, value: 3, to: Date())! // Final exam date
     
     // Custom colors
-    private let accentColor = Color("AccentColor") // Create this in Assets.xcassets
+    private let accentColor = Color("AccentColor")
     private var backgroundColor: Color { colorScheme == .dark ? Color.black.opacity(0.8) : Color.white }
     private var textColor: Color { colorScheme == .dark ? Color.white : Color.black.opacity(0.8) }
     
@@ -52,83 +51,90 @@ struct AddClassView: View {
                             .fontWeight(.bold)
                             .foregroundColor(textColor)
                         
-                        // Date picker
+                        // Day selection
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("Start Date")
+                            Text("Days")
                                 .font(.subheadline)
                                 .fontWeight(.medium)
                                 .foregroundColor(textColor.opacity(0.7))
                             
-                            DatePicker("", selection: $startDate, displayedComponents: .date)
-                                .datePickerStyle(.compact)
-                                .labelsHidden()
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                            WeekdaySelector(selectedDays: $selectedDays)
                         }
                         
-                        // Time pickers
-                        HStack(spacing: 16) {
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("Start Time")
-                                    .font(.subheadline)
-                                    .fontWeight(.medium)
-                                    .foregroundColor(textColor.opacity(0.7))
-                                
-                                DatePicker("", selection: $startTime, displayedComponents: .hourAndMinute)
-                                    .datePickerStyle(.compact)
-                                    .labelsHidden()
-                            }
-                            
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("End Time")
-                                    .font(.subheadline)
-                                    .fontWeight(.medium)
-                                    .foregroundColor(textColor.opacity(0.7))
-                                
-                                DatePicker("", selection: $endTime, displayedComponents: .hourAndMinute)
-                                    .datePickerStyle(.compact)
-                                    .labelsHidden()
-                            }
-                        }
-                        
-                        // Recurring toggle
-                        Toggle(isOn: $isRecurring) {
-                            Text("Recurring Class")
+                        // Time range pickers
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Time")
                                 .font(.subheadline)
                                 .fontWeight(.medium)
-                                .foregroundColor(textColor)
-                        }
-                        .toggleStyle(SwitchToggleStyle(tint: accentColor))
-                        
-                        // Recurring options - only show if recurring is enabled
-                        if isRecurring {
-                            VStack(alignment: .leading, spacing: 16) {
-                                // Recurring pattern
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text("Repeat")
-                                        .font(.subheadline)
-                                        .fontWeight(.medium)
-                                        .foregroundColor(textColor.opacity(0.7))
+                                .foregroundColor(textColor.opacity(0.7))
+                            
+                            HStack(spacing: 12) {
+                                VStack(alignment: .leading) {
+                                    Text("From")
+                                        .font(.caption)
+                                        .foregroundColor(textColor.opacity(0.6))
                                     
-                                    Picker("", selection: $recurringPattern) {
-                                        Text("Daily").tag(RecurringPattern.daily)
-                                        Text("Weekly").tag(RecurringPattern.weekly)
-                                        Text("Monthly").tag(RecurringPattern.monthly)
-                                    }
-                                    .pickerStyle(.segmented)
-                                    .background(colorScheme == .dark ? Color.white.opacity(0.1) : Color.black.opacity(0.03))
-                                    .cornerRadius(8)
+                                    DatePicker("", selection: $startTime, displayedComponents: .hourAndMinute)
+                                        .datePickerStyle(.compact)
+                                        .labelsHidden()
+                                        .onChange(of: startTime) { newValue in
+                                            // If end time is earlier than start time, set it to start time + 1 hour
+                                            if endTime < startTime {
+                                                endTime = Calendar.current.date(byAdding: .hour, value: 1, to: startTime)!
+                                            }
+                                        }
                                 }
                                 
-                                // Day selection for weekly pattern
-                                if recurringPattern == .weekly {
-                                    VStack(alignment: .leading, spacing: 8) {
-                                        Text("Days")
-                                            .font(.subheadline)
-                                            .fontWeight(.medium)
-                                            .foregroundColor(textColor.opacity(0.7))
-                                        
-                                        WeekdaySelector(selectedDays: $selectedDays)
-                                    }
+                                VStack(alignment: .leading) {
+                                    Text("To")
+                                        .font(.caption)
+                                        .foregroundColor(textColor.opacity(0.6))
+                                    
+                                    DatePicker("", selection: $endTime, displayedComponents: .hourAndMinute)
+                                        .datePickerStyle(.compact)
+                                        .labelsHidden()
+                                }
+                            }
+                        }
+                        
+                        // Course dates
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Course Dates")
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                                .foregroundColor(textColor.opacity(0.7))
+                            
+                            HStack(spacing: 12) {
+                                VStack(alignment: .leading) {
+                                    Text("First Day")
+                                        .font(.caption)
+                                        .foregroundColor(textColor.opacity(0.6))
+                                    
+                                    DatePicker("", selection: $firstDayOfInstruction, displayedComponents: .date)
+                                        .datePickerStyle(.compact)
+                                        .labelsHidden()
+                                        .onChange(of: firstDayOfInstruction) { newValue in
+                                            // If first day is after final exam, adjust final exam
+                                            if finalExamDate < newValue {
+                                                finalExamDate = Calendar.current.date(byAdding: .month, value: 3, to: newValue)!
+                                            }
+                                        }
+                                }
+                                
+                                VStack(alignment: .leading) {
+                                    Text("Final Exam")
+                                        .font(.caption)
+                                        .foregroundColor(textColor.opacity(0.6))
+                                    
+                                    DatePicker("", selection: $finalExamDate, displayedComponents: .date)
+                                        .datePickerStyle(.compact)
+                                        .labelsHidden()
+                                        .onChange(of: finalExamDate) { newValue in
+                                            // Ensure final exam is after first day
+                                            if newValue < firstDayOfInstruction {
+                                                finalExamDate = firstDayOfInstruction
+                                            }
+                                        }
                                 }
                             }
                         }
@@ -138,41 +144,83 @@ struct AddClassView: View {
                     
                     VStack(spacing: 16) {
                         if showError {
-                            Text("Please enter a class title")
-                                .font(.caption)
-                                .foregroundColor(.red)
-                                .padding(.horizontal)
+                            if title.isEmpty {
+                                Text("Please enter a class title")
+                                    .font(.caption)
+                                    .foregroundColor(.red)
+                                    .padding(.horizontal)
+                            } else if selectedDays.isEmpty {
+                                Text("Please select at least one day")
+                                    .font(.caption)
+                                    .foregroundColor(.red)
+                                    .padding(.horizontal)
+                            } else if endTime <= startTime {
+                                Text("End time must be after start time")
+                                    .font(.caption)
+                                    .foregroundColor(.red)
+                                    .padding(.horizontal)
+                            } else if finalExamDate < firstDayOfInstruction {
+                                Text("Final exam must be after first day of instruction")
+                                    .font(.caption)
+                                    .foregroundColor(.red)
+                                    .padding(.horizontal)
+                            }
                         }
                         
                         Button(action: {
                             if title.isEmpty {
                                 showError = true
+                            } else if selectedDays.isEmpty {
+                                showError = true
+                            } else if endTime <= startTime {
+                                showError = true
+                            } else if finalExamDate < firstDayOfInstruction {
+                                showError = true
                             } else {
-                                // Extract dates from class sessions
-                                let schedule = createClassSchedule()
-                                let sessionDates = schedule.map { $0.startTime }
-                                
-                                // Create and add the class
-                                classViewModel.addClass(Class(
-                                    id: UUID(),
-                                    title: title,
-                                    instructor: instructor,
-                                    instructorEmail: instructorEmail,
-                                    assignments: [],
-                                    schedule: sessionDates
-                                ))
-                                dismiss()
+                                // Find the first occurrence date based on selected days and firstDayOfInstruction
+                                if let firstDate = getNextOccurrenceDate() {
+                                    // Extract time components
+                                    let startTimeComponents = Calendar.current.dateComponents([.hour, .minute], from: startTime)
+                                    let endTimeComponents = Calendar.current.dateComponents([.hour, .minute], from: endTime)
+                                    
+                                    // Create date with just the date part
+                                    let classDate = firstDate
+                                    
+                                    // Create start time by combining date and time components
+                                    var fullStartTime = Calendar.current.date(from:
+                                        Calendar.current.dateComponents([.year, .month, .day], from: firstDate))!
+                                    fullStartTime = Calendar.current.date(bySettingHour: startTimeComponents.hour!, minute: startTimeComponents.minute!, second: 0, of: fullStartTime)!
+                                    
+                                    // Create end time by combining date and time components
+                                    var fullEndTime = Calendar.current.date(from:
+                                        Calendar.current.dateComponents([.year, .month, .day], from: firstDate))!
+                                    fullEndTime = Calendar.current.date(bySettingHour: endTimeComponents.hour!, minute: endTimeComponents.minute!, second: 0, of: fullEndTime)!
+                                    
+                                    classViewModel.addClass(Class(
+                                        id: UUID(),
+                                        title: title,
+                                        instructor: instructor,
+                                        instructorEmail: instructorEmail,
+                                        assignments: [],
+                                        startTime: fullStartTime,
+                                        endTime: fullEndTime,
+                                        date: classDate,
+                                        selectedDays: selectedDays,
+                                        firstDayOfInstruction: firstDayOfInstruction,
+                                        finalExam: finalExamDate
+                                    ))
+                                    dismiss()
+                                }
                             }
                         }) {
                             Text("Add Class")
                                 .fontWeight(.medium)
                                 .frame(maxWidth: .infinity)
                                 .padding()
-                                .background(title.isEmpty ? accentColor.opacity(0.5) : accentColor)
-                                .foregroundColor(.white)
+                                .background(title.isEmpty || selectedDays.isEmpty ? accentColor.opacity(0.5) : accentColor)
                                 .cornerRadius(12)
                         }
-                        .disabled(title.isEmpty)
+                        .disabled(title.isEmpty || selectedDays.isEmpty || endTime <= startTime || finalExamDate < firstDayOfInstruction)
                     }
                 }
                 .padding(24)
@@ -198,115 +246,35 @@ struct AddClassView: View {
         }
     }
     
-    // Helper function to create class schedule based on user selections
-    private func createClassSchedule() -> [ClassSession] {
-        var sessions: [ClassSession] = []
+    // Helper to get the next occurrence date based on selected days and firstDayOfInstruction
+    private func getNextOccurrenceDate() -> Date? {
+        guard !selectedDays.isEmpty else { return nil }
         
-        // Create the initial date components
-        var components = Calendar.current.dateComponents([.year, .month, .day], from: startDate)
+        let calendar = Calendar.current
+        let currentWeekday = calendar.component(.weekday, from: firstDayOfInstruction)
         
-        // Set the time components from the time pickers
-        let startComponents = Calendar.current.dateComponents([.hour, .minute], from: startTime)
-        let endComponents = Calendar.current.dateComponents([.hour, .minute], from: endTime)
+        // Find the closest selected day
+        var closestDay: Weekday?
+        var minDaysToAdd = Int.max
         
-        components.hour = startComponents.hour
-        components.minute = startComponents.minute
-        
-        let startDateTime = Calendar.current.date(from: components)!
-        
-        components.hour = endComponents.hour
-        components.minute = endComponents.minute
-        
-        let endDateTime = Calendar.current.date(from: components)!
-        
-        // Add the first session
-        sessions.append(ClassSession(startTime: startDateTime, endTime: endDateTime))
-        
-        // If recurring, add more sessions
-        if isRecurring {
-            // Generate dates for the next 15 occurrences
-            let occurrenceCount = 15
+        for day in selectedDays {
+            // Convert our weekday (Monday = 1) to Calendar weekday (Sunday = 1)
+            let targetWeekday = day.rawValue == 7 ? 1 : day.rawValue + 1
             
-            switch recurringPattern {
-            case .daily:
-                for i in 1..<occurrenceCount {
-                    if let newStart = Calendar.current.date(byAdding: .day, value: i, to: startDateTime),
-                       let newEnd = Calendar.current.date(byAdding: .day, value: i, to: endDateTime) {
-                        sessions.append(ClassSession(startTime: newStart, endTime: newEnd))
-                    }
-                }
-                
-            case .weekly:
-                // If no days selected, use the same day of week as the start date
-                if selectedDays.isEmpty {
-                    let weekday = Calendar.current.component(.weekday, from: startDate)
-                    let adjustedWeekday = weekday == 1 ? 7 : weekday - 1 // Convert to Mon=1, Sun=7 format
-                    selectedDays = [Weekday(rawValue: adjustedWeekday) ?? .monday]
-                }
-                
-                // Get all occurrences for the selected days in the next several weeks
-                for week in 0..<(occurrenceCount / selectedDays.count + 1) {
-                    for day in selectedDays {
-                        // Skip first week's day if it's the same as the start date day
-                        if week == 0 && day.rawValue == (Calendar.current.component(.weekday, from: startDate) - 1) {
-                            continue
-                        }
-                        
-                        // Calculate the next date for this weekday
-                        if var newComponents = getNextWeekdayComponents(after: startDate, weekday: day, weeksToAdd: week) {
-                            // Set time from the original selections
-                            newComponents.hour = startComponents.hour
-                            newComponents.minute = startComponents.minute
-                            
-                            if let newStart = Calendar.current.date(from: newComponents) {
-                                // Calculate session duration
-                                let duration = endDateTime.timeIntervalSince(startDateTime)
-                                let newEnd = newStart.addingTimeInterval(duration)
-                                
-                                sessions.append(ClassSession(startTime: newStart, endTime: newEnd))
-                                
-                                if sessions.count >= occurrenceCount {
-                                    break
-                                }
-                            }
-                        }
-                    }
-                }
-                
-            case .monthly:
-                for i in 1..<occurrenceCount {
-                    if let newStart = Calendar.current.date(byAdding: .month, value: i, to: startDateTime),
-                       let newEnd = Calendar.current.date(byAdding: .month, value: i, to: endDateTime) {
-                        sessions.append(ClassSession(startTime: newStart, endTime: newEnd))
-                    }
-                }
+            // Calculate days to add
+            var daysToAdd = targetWeekday - currentWeekday
+            if daysToAdd < 0 {
+                daysToAdd += 7 // Move to next week if the day has already passed this week
+            }
+            
+            if daysToAdd < minDaysToAdd {
+                minDaysToAdd = daysToAdd
+                closestDay = day
             }
         }
         
-        return sessions.sorted { $0.startTime < $1.startTime }
-    }
-    
-    // Helper to get the next occurrence of a weekday
-    private func getNextWeekdayComponents(after date: Date, weekday: Weekday, weeksToAdd: Int) -> DateComponents? {
-        let calendar = Calendar.current
-        
-        // Get the current weekday (1 = Sunday, 2 = Monday, ..., 7 = Saturday)
-        let currentWeekday = calendar.component(.weekday, from: date)
-        
-        // Convert our weekday (Monday = 1) to Calendar weekday (Sunday = 1)
-        let targetWeekday = weekday.rawValue == 7 ? 1 : weekday.rawValue + 1
-        
-        // Calculate days to add
-        var daysToAdd = targetWeekday - currentWeekday
-        if daysToAdd <= 0 {
-            daysToAdd += 7 // Move to next week if the day has already passed this week
-        }
-        
-        // Add extra weeks
-        daysToAdd += weeksToAdd * 7
-        
-        if let nextDate = calendar.date(byAdding: .day, value: daysToAdd, to: date) {
-            return calendar.dateComponents([.year, .month, .day, .hour, .minute], from: nextDate)
+        if let _ = closestDay, minDaysToAdd != Int.max {
+            return calendar.date(byAdding: .day, value: minDaysToAdd, to: firstDayOfInstruction)
         }
         
         return nil
@@ -314,11 +282,6 @@ struct AddClassView: View {
 }
 
 // MARK: - Supporting Types
-
-// Recurring pattern types
-enum RecurringPattern {
-    case daily, weekly, monthly
-}
 
 // Weekday enum for selection
 enum Weekday: Int, CaseIterable, Identifiable {
@@ -337,13 +300,6 @@ enum Weekday: Int, CaseIterable, Identifiable {
         case .sunday: return "S"
         }
     }
-}
-
-// Class Session struct to represent a single occurrence
-struct ClassSession: Identifiable, Codable {
-    var id = UUID()
-    var startTime: Date
-    var endTime: Date
 }
 
 // MARK: - Weekday Selector Component

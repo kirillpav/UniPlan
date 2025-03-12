@@ -13,16 +13,46 @@ struct Class: Identifiable, Codable {
     var instructor: String
     var instructorEmail: String
     var assignments: [Assignment]
-    var schedule: [Date]
+    var startTime: Date
+    var endTime: Date
+    var date: Date
+    var selectedDays: [Weekday]
+    var firstDayOfInstruction: Date
+    var finalExam: Date
     
-//    Figure out how to do scheduling
+    // Class status logic
+    var isCompleted: Bool {
+        let calendar = Calendar.current
+        let today = Date()
+        return calendar.compare(today, to: finalExam, toGranularity: .day) == .orderedDescending
+    }
     
-    init(id: UUID, title: String, instructor: String, instructorEmail: String, assignments: [Assignment], schedule: [Date]) {
+    var daysString: String {
+            let sortedDays = selectedDays.sorted { $0.rawValue < $1.rawValue }
+            return sortedDays.map { $0.shortName }.joined(separator: ", ")
+        }
+        
+        // Format the class time as a string (e.g. "9:30 AM - 10:45 AM")
+    var timeRangeString: String {
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+        return "\(formatter.string(from: startTime)) - \(formatter.string(from: endTime))"
+    }
+           
+    
+    init(id: UUID, title: String, instructor: String, instructorEmail: String, assignments: [Assignment], startTime: Date, endTime: Date, date: Date, selectedDays: [Weekday], firstDayOfInstruction: Date, finalExam: Date) {
         self.id = id
         self.title = title
         self.instructor = instructor
         self.instructorEmail = instructorEmail
         self.assignments = assignments
-        self.schedule = schedule
+        self.startTime = startTime
+        self.endTime = endTime
+        self.date = date
+        self.selectedDays = selectedDays
+        self.firstDayOfInstruction = firstDayOfInstruction
+        self.finalExam = finalExam
     }
 }
+
+extension Weekday: Codable {}
