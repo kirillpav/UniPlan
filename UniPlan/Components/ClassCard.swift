@@ -6,6 +6,8 @@ struct ClassCard: View {
     var instructor: String
     var instructorEmail: String
     var numberOfAssignments: Int
+    var date: String
+    var timeRange: String
     
     
     var body: some View {
@@ -19,8 +21,8 @@ struct ClassCard: View {
                         Image(systemName: "calendar")
                             .font(.system(size: 16))
                         
-//                        Text(date)
-//                            .font(.system(size: 14))
+                        Text(date)
+                            .font(.system(size: 14))
                     }
                     
                     Spacer()
@@ -58,8 +60,8 @@ struct ClassCard: View {
                             Image(systemName: "clock")
                                 .font(.system(size: 16))
                             
-//                            Text(timeRange)
-//                                .font(.system(size: 16, weight: .medium))
+                            Text(timeRange)
+                                .font(.system(size: 16, weight: .medium))
                         }
                         .padding(.horizontal, 16)
                         .padding(.vertical, 10)

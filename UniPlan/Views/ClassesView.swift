@@ -31,7 +31,7 @@ struct ClassesView: View {
                         ForEach(classViewModel.classes) { currentClass in
                             let assignmentCount = assignmentsViewModel.assignments.filter { $0.classId == currentClass.id }.count
                             
-                            ClassCard(classId: currentClass.id,title: currentClass.title, instructor: currentClass.instructor, instructorEmail: currentClass.instructorEmail, numberOfAssignments: assignmentCount)
+                            ClassCard(classId: currentClass.id,title: currentClass.title, instructor: currentClass.instructor, instructorEmail: currentClass.instructorEmail, numberOfAssignments: assignmentCount, date: currentClass.daysString, timeRange: currentClass.timeRangeString)
                                 .padding(.horizontal, 20)
                         }
                     }
