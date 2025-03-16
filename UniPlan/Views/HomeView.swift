@@ -49,8 +49,11 @@ struct HomeView: View {
                 
                 if selectedCategory == .allCourses {
                     ClassesView()
+                } else if selectedCategory == .assignments {
+                    AssignmentsView()
                 } else {
                     upcomingView
+                    Spacer()
                     dueTodayView
                 }
                 // Bottom navigation bar
