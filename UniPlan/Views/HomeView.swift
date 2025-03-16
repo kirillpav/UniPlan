@@ -51,10 +51,8 @@ struct HomeView: View {
                     ClassesView()
                 } else {
                     upcomingView
+                    dueTodayView
                 }
-                
-                // Upcoming section
-                
                 // Bottom navigation bar
                 HStack(spacing: 0) {
                     TabBarButton(icon: "house.fill")
@@ -116,15 +114,53 @@ struct HomeView: View {
                     }
                 }
             }
-            
-            Spacer()
         }
         
     }
     
+    // Due today View
+    private var dueTodayView: some View {
+        VStack(spacing: 20) {
+            HStack {
+                Text("Due Today")
+                    .font(.system(size: 32, weight: .bold))
+                Spacer()
+            }
+            .padding(.horizontal)
+            
+            ScrollView() {
+                LazyVStack(spacing: 16) {
+                    ForEach(assignmentsViewModel.assignments) { assignment in
+                        //                        let _ = assignmentsViewModel.assignments.filter { Calendar.current.isDate($0.dueDate, inSameDayAs: currentDate) }
+                        
+                        if Calendar.current.isDate(assignment.dueDate, inSameDayAs: currentDate) {
+                            AssignmentRow(assignment: assignment) {
+                                if let index = assignmentsViewModel.assignments.firstIndex(where: { $0.id == assignment.id }) {
+                                    assignmentsViewModel.assignments[index].isCompleted.toggle()
+                                    assignmentsViewModel.saveAssignments()
+                                }
+                            }
+                            .padding(.horizontal)
+                            .listRowSeparator(.hidden)
+                            .listRowBackground(Color.clear)
+                            .listRowInsets(EdgeInsets())
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                Button(role: .destructive) {
+                                    assignmentsViewModel.deleteAssignment(assignment)
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     
     // Helper methods for formatting date and time
-    private func formatDate(_ date: Date) -> String {
+        private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "d MMM, yy"
         return formatter.string(from: date)

@@ -145,59 +145,7 @@ struct ClassDetailView: View {
 }
 
 // Custom row component for assignments
-struct AssignmentRow: View {
-    var assignment: Assignment
-    var toggleCompletion: () -> Void
-    
-    var body: some View {
-        HStack(spacing: 16) {
-            // Completion circle
-            Button(action: toggleCompletion) {
-                ZStack {
-                    Circle()
-                        .strokeBorder(Color.black.opacity(0.6), lineWidth: 1.5)
-                        .frame(width: 24, height: 24)
-                    
-                    if assignment.isCompleted {
-                        Circle()
-                            .fill(Color.black.opacity(0.3))
-                            .frame(width: 18, height: 18)
-                    }
-                }
-            }
-            
-            
-            // Assignment details
-            HStack(spacing: 4) {
-                Text(assignment.title)
-                    .font(.system(size: 18, weight: .medium))
-                    .foregroundColor(assignment.isCompleted ? .black.opacity(0.5) : .black)
-                    .strikethrough(assignment.isCompleted)
-                
-                Spacer()
-                
-                Text(formattedDueDate(assignment.dueDate))
-                    .font(.subheadline)
-                    .foregroundColor(.black.opacity(0.5))
-            }
-            
-            Spacer()
-        }
-        .padding(16)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color("SecondaryColor"))
-        )
-    }
-    
-    // Format the due date
-    private func formattedDueDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        return formatter.string(from: date)
-    }
-}
+
 
 
 
