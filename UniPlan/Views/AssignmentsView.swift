@@ -15,7 +15,9 @@ struct AssignmentsView: View {
         ScrollView {
             LazyVStack(spacing: 16) {
                 ForEach(assignmentsViewModel.assignments) { assignment in
-                    AssignmentRow(assignment: assignment) {
+                    let associatedClass = assignmentsViewModel.getClassForAssignment(assignment)
+                    
+                    AssignmentRow(assignment: assignment, assignmentCourse: associatedClass) {
                         if let index = assignmentsViewModel.assignments.firstIndex(where: { $0.id == assignment.id }) {
                             assignmentsViewModel.assignments[index].isCompleted.toggle()
                             assignmentsViewModel.saveAssignments()

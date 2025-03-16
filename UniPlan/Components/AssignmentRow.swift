@@ -9,7 +9,9 @@ import SwiftUI
 
 struct AssignmentRow: View {
     var assignment: Assignment
+    var assignmentCourse: Class?
     var toggleCompletion: () -> Void
+    
     
     var body: some View {
         HStack(spacing: 16) {
@@ -31,10 +33,18 @@ struct AssignmentRow: View {
             
             // Assignment details
             HStack(spacing: 4) {
-                Text(assignment.title)
-                    .font(.system(size: 18, weight: .medium))
-                    .foregroundColor(assignment.isCompleted ? .black.opacity(0.5) : .black)
-                    .strikethrough(assignment.isCompleted)
+                VStack {
+                    Text(assignment.title)
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundColor(assignment.isCompleted ? .black.opacity(0.5) : .black)
+                        .strikethrough(assignment.isCompleted)
+                    
+                    if let course = assignmentCourse {
+                        Text(course.title)
+                            .font(.subheadline)
+                            .foregroundColor(.black.opacity(0.7))
+                    }
+                }
                 
                 Spacer()
                 
