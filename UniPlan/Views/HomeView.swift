@@ -52,7 +52,8 @@ struct HomeView: View {
                     }
                     
                     if selectedCategory == .allCourses {
-                        ClassesView()
+                        HomeCoursesView
+                        Spacer()
                     } else if selectedCategory == .assignments {
                         AssignmentsView()
                     } else {
@@ -156,34 +157,118 @@ struct HomeView: View {
             .padding(.horizontal)
             
             ScrollView() {
-                LazyVStack(spacing: 16) {
-                    ForEach(assignmentsViewModel.assignments) { assignment in
-                        //                        let _ = assignmentsViewModel.assignments.filter { Calendar.current.isDate($0.dueDate, inSameDayAs: currentDate) }
+                if (assignmentsViewModel.assignments.isEmpty) {
+                    VStack(spacing: 16) {
+                        Spacer()
                         
-                        if Calendar.current.isDate(assignment.dueDate, inSameDayAs: currentDate) {
-                            AssignmentRow(assignment: assignment) {
-                                if let index = assignmentsViewModel.assignments.firstIndex(where: { $0.id == assignment.id }) {
-                                    assignmentsViewModel.assignments[index].isCompleted.toggle()
-                                    assignmentsViewModel.saveAssignments()
+                        Image(systemName: "calendar.badge.plus")
+                            .font(.system(size: 50))
+                            .foregroundColor(.gray.opacity(0.5))
+                            .padding()
+                        
+                        Text("No upcoming classes")
+                            .font(.title3)
+                            .foregroundColor(.gray)
+                        
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 60)
+                } else {
+                    LazyVStack(spacing: 16) {
+                        
+                        
+                        ForEach(assignmentsViewModel.assignments) { assignment in
+                            //                        let _ = assignmentsViewModel.assignments.filter { Calendar.current.isDate($0.dueDate, inSameDayAs: currentDate) }
+                            
+                            if Calendar.current.isDate(assignment.dueDate, inSameDayAs: currentDate) {
+                                AssignmentRow(assignment: assignment) {
+                                    if let index = assignmentsViewModel.assignments.firstIndex(where: { $0.id == assignment.id }) {
+                                        assignmentsViewModel.assignments[index].isCompleted.toggle()
+                                        assignmentsViewModel.saveAssignments()
+                                    }
                                 }
-                            }
-                            .padding(.horizontal)
-                            .listRowSeparator(.hidden)
-                            .listRowBackground(Color.clear)
-                            .listRowInsets(EdgeInsets())
-                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                Button(role: .destructive) {
-                                    assignmentsViewModel.deleteAssignment(assignment)
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
+                                .padding(.horizontal)
+                                .listRowSeparator(.hidden)
+                                .listRowBackground(Color.clear)
+                                .listRowInsets(EdgeInsets())
+                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                    Button(role: .destructive) {
+                                        assignmentsViewModel.deleteAssignment(assignment)
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
                                 }
                             }
                         }
                     }
+                    
                 }
+                
+                
             }
         }
     }
+    
+    private var HomeCoursesView: some View {
+        VStack(spacing: 20) {
+            HStack {
+                Text("Courses")
+                    .font(.system(size: 32, weight: .bold))
+                    .foregroundStyle(Color("AccentColor"))
+                Spacer()
+            }
+            .padding(.horizontal)
+            
+            if classViewModel.classes.isEmpty {
+                // Empty state
+                VStack(spacing: 16) {
+                    Spacer()
+                    
+                    Image(systemName: "calendar.badge.plus")
+                        .font(.system(size: 50))
+                        .foregroundColor(.gray.opacity(0.5))
+                        .padding()
+                    
+                    Text("No upcoming classes")
+                        .font(.title3)
+                        .foregroundColor(.gray)
+                    
+                    Spacer()
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 60)
+            } else {
+                // Course cards from view model
+                LazyVStack(spacing: 16) {
+                    ForEach(classViewModel.classes) { classItem in
+                        let assignmentCount = assignmentsViewModel.assignments.filter { $0.classId == classItem.id }.count
+                        
+                        NavigationLink(destination: ClassDetailView(
+                            classId: classItem.id,
+                            title: classItem.title,
+                            instructor: classItem.instructor,
+                            instructorEmail: classItem.instructorEmail,
+                            numberOfAssignments: assignmentCount
+                        )) {
+                            ClassCard(
+                                classId: classItem.id,
+                                title: classItem.title,
+                                instructor: classItem.instructor,
+                                instructorEmail: classItem.instructorEmail,
+                                numberOfAssignments: assignmentCount,
+                                date: classItem.daysString,
+                                timeRange: classItem.timeRangeString
+                            )
+                        }
+                    }
+                }
+                
+            }
+        }
+        
+    }
+    
     
     
     // Helper methods for formatting date and time
@@ -199,11 +284,6 @@ struct HomeView: View {
         return formatter.string(from: date)
     }
 }
-
-// Upcoming view
-//private var UpcomingView: some View {
-//
-//}
 
 // Category pill component (unchanged)
 struct CategoryPill: View {
@@ -260,6 +340,7 @@ struct TabBarButton: View {
         }
     }
 }
+
 
 
 struct HomeView_Previews: PreviewProvider {

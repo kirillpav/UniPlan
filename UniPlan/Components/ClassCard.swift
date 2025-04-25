@@ -59,10 +59,11 @@ struct ClassCard: View {
                         HStack(spacing: 8) {
                             Image(systemName: "clock")
                                 .font(.system(size: 16))
+                                .foregroundStyle(Color("SecondaryColor"))
                             
                             Text(timeRange)
                                 .font(.system(size: 16, weight: .medium))
-                                .foregroundStyle(Color("AccentColor"))
+                                .foregroundStyle(Color("SecondaryColor"))
                         }
                         .padding(.horizontal, 16)
                         .padding(.vertical, 10)

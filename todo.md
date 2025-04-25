@@ -6,6 +6,6 @@
 [x] - make functional add classes to semesters
 [x] - make working class view
 [x] - implement assignments for each class
-[] - create class redirection from HomeView()
+[x] - create class redirection from HomeView()
 
 
