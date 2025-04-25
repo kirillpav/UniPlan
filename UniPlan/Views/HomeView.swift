@@ -13,7 +13,9 @@ struct HomeView: View {
         case allCourses = "All Courses"
     }
     
-    let currentDate = Date()
+    // Current date for filtering assignments
+    var currentDate = Date()
+    
     
     var body: some View {
         ZStack {
@@ -76,6 +78,9 @@ struct HomeView: View {
         }
     }
     
+    
+    
+    
     // upcoming view section
     private var upcomingView: some View {
         VStack(spacing: 20) {
@@ -106,16 +111,30 @@ struct HomeView: View {
                 .padding(.vertical, 60)
             } else {
                 // Course cards from view model
-                ScrollView {
-                    LazyVStack(spacing: 16) {
-                        ForEach(classViewModel.classes) { classItem in
-                            let assignmentCount = assignmentsViewModel.assignments.filter { $0.classId == classItem.id }.count
-                            
-                            ClassCard(classId: classItem.id,title: classItem.title, instructor: classItem.instructor, instructorEmail: classItem.instructorEmail, numberOfAssignments: assignmentCount, date: classItem.daysString, timeRange: classItem.timeRangeString)
-                                
+                LazyVStack(spacing: 16) {
+                    ForEach(classViewModel.classes) { classItem in
+                        let assignmentCount = assignmentsViewModel.assignments.filter { $0.classId == classItem.id }.count
+                        
+                        NavigationLink(destination: ClassDetailView(
+                            classId: classItem.id,
+                            title: classItem.title,
+                            instructor: classItem.instructor,
+                            instructorEmail: classItem.instructorEmail,
+                            numberOfAssignments: assignmentCount
+                        )) {
+                            ClassCard(
+                                classId: classItem.id,
+                                title: classItem.title,
+                                instructor: classItem.instructor,
+                                instructorEmail: classItem.instructorEmail,
+                                numberOfAssignments: assignmentCount,
+                                date: classItem.daysString,
+                                timeRange: classItem.timeRangeString
+                            )
                         }
                     }
                 }
+                
             }
         }
         
@@ -163,7 +182,7 @@ struct HomeView: View {
     
     
     // Helper methods for formatting date and time
-        private func formatDate(_ date: Date) -> String {
+    private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "d MMM, yy"
         return formatter.string(from: date)
@@ -178,7 +197,7 @@ struct HomeView: View {
 
 // Upcoming view
 //private var UpcomingView: some View {
-//    
+//
 //}
 
 // Category pill component (unchanged)
@@ -187,17 +206,37 @@ struct CategoryPill: View {
     let isSelected: Bool
     
     var body: some View {
-        Text(title)
-            .font(.system(size: 16, weight: .medium))
-            .padding(.horizontal, 20)
-            .padding(.vertical, 12)
-            .background(isSelected ? Color(UIColor.systemGray6) : Color.white)
-            .foregroundColor(.black)
-            .clipShape(Capsule())
-            .overlay(
-                Capsule()
-                    .stroke(Color(UIColor.systemGray5), lineWidth: isSelected ? 0 : 1)
-            )
+        HStack(spacing: 6) {
+            // Add an appropriate SF Symbol for each category
+            Image(systemName: symbolForCategory(title))
+                .font(.system(size: 14))
+            
+            Text(title)
+                .font(.system(size: 16, weight: .medium))
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(isSelected ? Color("SecondaryColor") : Color.white)
+        .foregroundColor(.black)
+        .clipShape(Capsule())
+        .overlay(
+            Capsule()
+                .stroke(Color(UIColor.systemGray5), lineWidth: isSelected ? 0 : 1)
+        )
+    }
+    
+    // Function to return appropriate SF Symbol based on category title
+    private func symbolForCategory(_ category: String) -> String {
+        switch category {
+        case "Today":
+            return "calendar.day.timeline.left"
+        case "Assignments":
+            return "doc.text"
+        case "All Courses":
+            return "book"
+        default:
+            return "circle"
+        }
     }
 }
 
