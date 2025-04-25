@@ -49,7 +49,7 @@ struct ClassCard: View {
                         HStack(spacing: 4) {
                             Text(instructor)
                                 .font(.system(size: 16))
-                                .foregroundColor(.black)
+                                .foregroundColor(Color("AccentColor"))
                         }
                     }
                     
@@ -62,10 +62,11 @@ struct ClassCard: View {
                             
                             Text(timeRange)
                                 .font(.system(size: 16, weight: .medium))
+                                .foregroundStyle(Color("AccentColor"))
                         }
                         .padding(.horizontal, 16)
                         .padding(.vertical, 10)
-                        .background(.white)
+                        .background(Color("AccentColor"))
                         .clipShape(Capsule())
                         
                         Spacer()
@@ -73,8 +74,8 @@ struct ClassCard: View {
                         // Open button/indicator
                         ZStack {
                             Circle()
-                                .fill(.white)
-                                .frame(width: 50, height: 50)
+                                .fill(Color("AccentColor"))
+                                .frame(width: 45, height: 45)
                             
                             Image(systemName: "arrow.up.right")
                                 .font(.system(size: 20))

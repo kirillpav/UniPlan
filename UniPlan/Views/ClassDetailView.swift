@@ -1,61 +1,42 @@
 import SwiftUI
 
 struct ClassDetailView: View {
-    var classId: UUID
-    var title: String
-    var instructor: String
-    var instructorEmail: String
-    var numberOfAssignments: Int
-    @StateObject var assignmentsViewModel = AssignmentsViewModel()
+    let classId: UUID
+    let title: String
+    let instructor: String
+    let instructorEmail: String
+    let numberOfAssignments: Int
+    @StateObject private var assignmentsViewModel = AssignmentsViewModel()
     
-    @State private var showAddAssignmentView: Bool = false
-    @State private var showCopiedConfirmation = false
+    @State private var showAddAssignmentView = false
     
     var filteredAssignments: [Assignment] {
         assignmentsViewModel.assignments.filter { $0.classId == classId }
     }
     
     var body: some View {
-        ZStack {
+        ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                    // Content inside the header
-                    VStack(spacing: 8) {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(title)
-                                    .font(.system(size: 36, weight: .bold))
-                                    
-                                
-                                Text(instructor)
-                                    .font(.headline)
-
-                                Button {
-                                    UIPasteboard.general.string = instructorEmail
-                                    withAnimation {
-                                        showCopiedConfirmation = true
-                                    }
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                        withAnimation {
-                                            showCopiedConfirmation = false
-                                        }
-                                    }
-                                } label: {
-                                    Text(instructorEmail)
-                                        .font(.subheadline)
-                                        .opacity(0.8)
-                                }
-                            }
-                        }
-                        .padding(.bottom, 20)
-                    }
-                    .padding(.horizontal, 24)
+                // Header
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(title)
+                        .font(.system(size: 32, weight: .bold))
+                        .foregroundStyle(Color("AccentColor"))
+                    
+                    Text("Instructor: \(instructor)")
+                        .font(.system(size: 18))
+                    
+                    Text(instructorEmail)
+                        .font(.system(size: 16))
+                        .foregroundColor(.gray)
+                }
                 
                 // Assignments section
-                VStack {
+                VStack(alignment: .leading, spacing: 16) {
                     HStack {
                         Text("Assignments")
-                            .font(.title2)
-                            .fontWeight(.bold)
+                            .font(.system(size: 24, weight: .semibold))
+                            .foregroundStyle(Color("AccentColor"))
                         
                         Spacer()
                         
@@ -69,82 +50,54 @@ struct ClassDetailView: View {
                                 .background(Circle().fill(Color("PrimaryColor")))
                         }
                     }
-                    .padding(.horizontal)
                     
                     if filteredAssignments.isEmpty {
                         VStack(spacing: 16) {
-                            Spacer()
-                            
                             Image(systemName: "list.clipboard")
                                 .font(.system(size: 40))
                                 .opacity(0.3)
+                                .padding(.top, 20)
                             
                             Text("No assignments yet")
                                 .font(.headline)
                                 .opacity(0.5)
-                            
-                            Button(action: {
-                                showAddAssignmentView = true
-                            }) {
-                                Text("Add Your First Assignment")
-                                    .font(.headline)
-                                    .foregroundColor(.black)
-                                    .padding(.vertical, 12)
-                                    .padding(.horizontal, 24)
-                                    .background(Capsule().fill(Color("PrimaryColor")))
-                            }
-                            
-                            Spacer()
                         }
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 60)
                     } else {
-                        ScrollView {
-                            LazyVStack(spacing: 16) {
-                                ForEach(filteredAssignments) { assignment in
-                                    AssignmentRow(assignment: assignment) {
-                                        if let index = assignmentsViewModel.assignments.firstIndex(where: { $0.id == assignment.id }) {
-                                            assignmentsViewModel.assignments[index].isCompleted.toggle()
-                                            assignmentsViewModel.saveAssignments()
-                                        }
-                                    }
-                                    .listRowSeparator(.hidden)
-                                    .listRowBackground(Color.clear)
-                                    .listRowInsets(EdgeInsets())
-                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                        Button(role: .destructive) {
-                                            assignmentsViewModel.deleteAssignment(assignment)
-                                        } label: {
-                                            Label("Delete", systemImage: "trash")
-                                        }
+                        LazyVStack(spacing: 16) {
+                            ForEach(filteredAssignments) { assignment in
+                                AssignmentRow(assignment: assignment) {
+                                    if let index = assignmentsViewModel.assignments.firstIndex(where: { $0.id == assignment.id }) {
+                                        assignmentsViewModel.assignments[index].isCompleted.toggle()
+                                        assignmentsViewModel.saveAssignments()
                                     }
                                 }
                             }
-                            .padding()
                         }
                     }
                 }
             }
-            .padding(.vertical)
-            if showCopiedConfirmation {
-                            Text("Copied")
-                                .font(.headline)
-                                .padding()
-                                .background(Color.black.opacity(0.3))
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                                .transition(.scale.combined(with: .opacity))
-                                .zIndex(1000) // Ensure it's on top of everything
-                        }
+            .padding()
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .background(Color("AppBackground"))
         .sheet(isPresented: $showAddAssignmentView) {
             AddAssignmentView(assignmentsViewModel: assignmentsViewModel, classId: classId)
         }
     }
-    
 }
 
-// Custom row component for assignments
+#Preview {
+    NavigationView {
+        ClassDetailView(
+            classId: UUID(),
+            title: "Introduction to Computer Science",
+            instructor: "Dr. Smith",
+            instructorEmail: "smith@university.edu",
+            numberOfAssignments: 5
+        )
+    }
+}
 
 
 

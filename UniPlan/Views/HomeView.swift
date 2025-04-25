@@ -18,63 +18,66 @@ struct HomeView: View {
     
     
     var body: some View {
-        ZStack {
-            VStack(spacing: 0) {
-                // Greeting section
-                VStack(alignment: .leading, spacing: 0) {
-                    Text("Hello,")
-                        .font(.system(size: 40, weight: .regular))
+        NavigationView {
+            ZStack {
+                VStack(spacing: 0) {
+                    // Greeting section
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text("Hello,")
+                            .font(.system(size: 40, weight: .regular))
+                        
+                        Text("Timothy Jones")
+                            .font(.system(size: 40, weight: .bold))
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal)
+                    .padding(.top, 10)
+                    .foregroundColor(Color("AccentColor"))
                     
-                    Text("Timothy Jones")
-                        .font(.system(size: 40, weight: .bold))
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal)
-                .padding(.top, 10)
-                
-                // Horizontal filters/categories
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 10) {
-                        ForEach(Category.allCases, id: \.self) { category in
-                            CategoryPill(
-                                title: category.rawValue,
-                                isSelected: selectedCategory == category
-                            )
-                            .onTapGesture {
-                                selectedCategory = category
+                    // Horizontal filters/categories
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 10) {
+                            ForEach(Category.allCases, id: \.self) { category in
+                                CategoryPill(
+                                    title: category.rawValue,
+                                    isSelected: selectedCategory == category
+                                )
+                                .onTapGesture {
+                                    selectedCategory = category
+                                }
                             }
                         }
+                        .padding(.horizontal)
+                        .padding(.vertical, 20)
                     }
-                    .padding(.horizontal)
-                    .padding(.vertical, 20)
-                }
-                
-                if selectedCategory == .allCourses {
-                    ClassesView()
-                } else if selectedCategory == .assignments {
-                    AssignmentsView()
-                } else {
-                    upcomingView
-                    Spacer()
-                    dueTodayView
-                }
-                // Bottom navigation bar
-                HStack(spacing: 0) {
-                    TabBarButton(icon: "house.fill")
-                    TabBarButton(icon: "calendar")
                     
-                    TabBarButton(icon: "chart.bar.fill")
-                    TabBarButton(icon: "hexagon")
+                    if selectedCategory == .allCourses {
+                        ClassesView()
+                    } else if selectedCategory == .assignments {
+                        AssignmentsView()
+                    } else {
+                        upcomingView
+                        Spacer()
+                        dueTodayView
+                    }
+                    // Bottom navigation bar
+                    HStack(spacing: 0) {
+                        TabBarButton(icon: "house.fill")
+                        TabBarButton(icon: "calendar")
+                        
+                        TabBarButton(icon: "chart.bar.fill")
+                        TabBarButton(icon: "hexagon")
+                    }
+                    .frame(height: 90)
+                    .background(Color("PrimaryColor"))
+                    .cornerRadius(20)
                 }
-                .frame(height: 90)
-                .background(Color("SecondaryColor"))
-                .cornerRadius(20)
             }
-        }
-        .edgesIgnoringSafeArea(.bottom)
-        .background(Color(UIColor.systemBackground))
-        .onAppear {
-            classViewModel.fetchClasses()
+            .edgesIgnoringSafeArea(.bottom)
+            .background(Color("AppBackground"))
+            .onAppear {
+                classViewModel.fetchClasses()
+            }
         }
     }
     
@@ -87,6 +90,7 @@ struct HomeView: View {
             HStack {
                 Text("Upcoming")
                     .font(.system(size: 32, weight: .bold))
+                    .foregroundStyle(Color("AccentColor"))
                 Spacer()
             }
             .padding(.horizontal)
@@ -146,6 +150,7 @@ struct HomeView: View {
             HStack {
                 Text("Due Today")
                     .font(.system(size: 32, weight: .bold))
+                    .foregroundStyle(Color("AccentColor"))
                 Spacer()
             }
             .padding(.horizontal)
@@ -216,7 +221,7 @@ struct CategoryPill: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
-        .background(isSelected ? Color("SecondaryColor") : Color.white)
+        .background(isSelected ? Color("PrimaryColor") : Color("AccentColor"))
         .foregroundColor(.black)
         .clipShape(Capsule())
         .overlay(
@@ -256,16 +261,6 @@ struct TabBarButton: View {
     }
 }
 
-// This is an assumed structure of your Class model
-// Replace with your actual Class model implementation if different
-// struct Class: Identifiable, Codable {
-//     var id: UUID
-//     var title: String
-//     var instructor: String
-//     var date: Date
-//     var startTime: Date
-//     var endTime: Date
-// }
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
