@@ -33,7 +33,7 @@ struct AssignmentRow: View {
             
             // Assignment details
             HStack(spacing: 4) {
-                VStack {
+                VStack(alignment: .leading, spacing: 4) {
                     Text(assignment.title)
                         .font(.system(size: 18, weight: .medium))
                         .foregroundColor(assignment.isCompleted ? .black.opacity(0.5) : .black)

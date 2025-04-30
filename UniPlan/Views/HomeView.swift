@@ -1,4 +1,5 @@
 import SwiftUI
+import Portal
 
 struct HomeView: View {
     @StateObject private var courseViewModel = CourseViewModel()

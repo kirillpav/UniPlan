@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E8B85D9E2DC2B4E300701277 /* Portal in Frameworks */ = {isa = PBXBuildFile; productRef = E8B85D9D2DC2B4E300701277 /* Portal */; };
 		E8F671CB2CD5E5AB00E26938 /* todo.md in Resources */ = {isa = PBXBuildFile; fileRef = E8F671CA2CD5E5A500E26938 /* todo.md */; };
 /* End PBXBuildFile section */
 
@@ -57,6 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8B85D9E2DC2B4E300701277 /* Portal in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,6 +120,7 @@
 			);
 			name = UniPlan;
 			packageProductDependencies = (
+				E8B85D9D2DC2B4E300701277 /* Portal */,
 			);
 			productName = UniPlan;
 			productReference = E8F433CF2CD56C12002319FE /* UniPlan.app */;
@@ -203,6 +206,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				E8F433FF2CD5BE3C002319FE /* XCRemoteSwiftPackageReference "supabase-swift" */,
+				E8B85D982DC2A59500701277 /* XCRemoteSwiftPackageReference "Portal" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E8F433D02CD56C12002319FE /* Products */;
@@ -568,6 +572,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		E8B85D982DC2A59500701277 /* XCRemoteSwiftPackageReference "Portal" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Aeastr/Portal.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		E8F433FF2CD5BE3C002319FE /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/supabase/supabase-swift.git";
@@ -577,6 +589,14 @@
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E8B85D9D2DC2B4E300701277 /* Portal */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E8B85D982DC2A59500701277 /* XCRemoteSwiftPackageReference "Portal" */;
+			productName = Portal;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E8F433C72CD56C12002319FE /* Project object */;
 }

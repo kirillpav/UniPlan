@@ -1,6 +1,15 @@
 {
-  "originHash" : "ccc727310637079b7355ccf59e7d153c26677020c1a43e177b78cc9df7963c0f",
+  "originHash" : "2d2a929b23fba5b3bce41252423674c6778244b2b6384984a7dd3b6d5980de3f",
   "pins" : [
+    {
+      "identity" : "portal",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Aeastr/Portal.git",
+      "state" : {
+        "revision" : "ffeda00265e3a8cef12164348d25fef54d971e4c",
+        "version" : "1.0.0"
+      }
+    },
     {
       "identity" : "supabase-swift",
       "kind" : "remoteSourceControl",

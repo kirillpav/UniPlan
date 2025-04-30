@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 class AssignmentsViewModel: ObservableObject {
     @Published var assignments: [Assignment] = []
@@ -37,7 +38,15 @@ class AssignmentsViewModel: ObservableObject {
     }
     
     func fetchCourses() {
-        if let encoded = UserDefaults.standard.data(forKey: "classes") {
+        if let encoded = UserDefaults.standard.data(forKey: "courses") {
+            if let decoded = try? JSONDecoder().decode([Course].self, from: encoded) {
+                courses = decoded
+            }
+        } else if let encoded = UserDefaults.standard.data(forKey: "Courses") {
+            if let decoded = try? JSONDecoder().decode([Course].self, from: encoded) {
+                courses = decoded
+            }
+        } else if let encoded = UserDefaults.standard.data(forKey: "classes") {
             if let decoded = try? JSONDecoder().decode([Course].self, from: encoded) {
                 courses = decoded
             }
@@ -64,5 +73,4 @@ class AssignmentsViewModel: ObservableObject {
             saveAssignments()
         }
     }
-    
 }

@@ -18,10 +18,7 @@ struct AssignmentsView: View {
                     let associatedClass = assignmentsViewModel.getClassForAssignment(assignment)
                     
                     AssignmentRow(assignment: assignment, assignmentCourse: associatedClass) {
-                        if let index = assignmentsViewModel.assignments.firstIndex(where: { $0.id == assignment.id }) {
-                            assignmentsViewModel.assignments[index].isCompleted.toggle()
-                            assignmentsViewModel.saveAssignments()
-                        }
+                        assignmentsViewModel.toggleAssignmentCompletion(assignmentId: assignment.id)
                     }
                     .listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
@@ -36,8 +33,17 @@ struct AssignmentsView: View {
                 }
             }
             .padding(.horizontal)
+            .onAppear {
+                assignmentsViewModel.fetchCourses()
+            }
             
         }
     }
 }
 
+
+struct AssignmentsView_Previews: PreviewProvider {
+    static var previews: some View {
+        AssignmentsView()
+    }
+}
