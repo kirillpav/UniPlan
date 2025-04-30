@@ -12,31 +12,33 @@ struct AssignmentsView: View {
     
     
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: 16) {
-                ForEach(assignmentsViewModel.assignments) { assignment in
-                    let associatedClass = assignmentsViewModel.getClassForAssignment(assignment)
-                    
-                    AssignmentRow(assignment: assignment, assignmentCourse: associatedClass) {
-                        assignmentsViewModel.toggleAssignmentCompletion(assignmentId: assignment.id)
-                    }
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets())
-                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                        Button(role: .destructive) {
-                            assignmentsViewModel.deleteAssignment(assignment)
-                        } label: {
-                            Label("Delete", systemImage: "trash")
-                        }
+        List {
+            ForEach(assignmentsViewModel.assignments) { assignment in
+                let associatedClass = assignmentsViewModel.getClassForAssignment(assignment)
+                
+                AssignmentRow(assignment: assignment, assignmentCourse: associatedClass) {
+                    assignmentsViewModel.toggleAssignmentCompletion(assignmentId: assignment.id)
+                }
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets())
+                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                    Button(role: .destructive) {
+                        assignmentsViewModel.deleteAssignment(assignment)
+                    } label: {
+                        Label("Delete", systemImage: "trash")
                     }
                 }
             }
-            .padding(.horizontal)
-            .onAppear {
-                assignmentsViewModel.fetchCourses()
-            }
-            
+//            .onDelete { indexSet in
+//                for index in indexSet {
+//                    let assignment = assignmentsViewModel.assignments[index]
+//                    assignmentsViewModel.deleteAssignment(assignment)
+//                }
+        }
+        .listStyle(PlainListStyle())
+        .onAppear {
+            assignmentsViewModel.fetchCourses()
         }
     }
 }
