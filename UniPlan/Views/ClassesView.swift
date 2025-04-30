@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ClassesView: View {
-    @StateObject private var classViewModel = ClassViewModel()
+    @StateObject private var courseViewModel = CourseViewModel()
     @StateObject private var assignmentsViewModel = AssignmentsViewModel()
     @State private var showAddClassView = false
     
@@ -10,7 +10,7 @@ struct ClassesView: View {
         NavigationStack {
             VStack {
                 HStack {
-                    Text("My Courses (\(classViewModel.classes.count))").font(.largeTitle)
+                    Text("My Courses (\(courseViewModel.courses.count))").font(.largeTitle)
                     .cornerRadius(10)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
@@ -28,10 +28,10 @@ struct ClassesView: View {
                 ScrollView {
                     
                     LazyVStack(spacing: 10) {
-                        ForEach(classViewModel.classes) { currentClass in
-                            let assignmentCount = assignmentsViewModel.assignments.filter { $0.classId == currentClass.id }.count
+                        ForEach(courseViewModel.courses) { currentCourse in
+                            let assignmentCount = assignmentsViewModel.assignments.filter { $0.classId == currentCourse.id }.count
                             
-                            ClassCard(classId: currentClass.id,title: currentClass.title, instructor: currentClass.instructor, instructorEmail: currentClass.instructorEmail, numberOfAssignments: assignmentCount, date: currentClass.daysString, timeRange: currentClass.timeRangeString)
+                            ClassCard(classId: currentCourse.id,title: currentCourse.title, code: currentCourse.code, instructor: currentCourse.instructor, instructorEmail: currentCourse.instructorEmail, numberOfAssignments: assignmentCount, date: currentCourse.daysString, timeRange: currentCourse.timeRangeString)
                                 .padding(.horizontal, 20)
                         }
                     }
@@ -43,10 +43,10 @@ struct ClassesView: View {
                 Color.clear.frame(height: 20)
             }
             .sheet(isPresented: $showAddClassView) {
-                AddClassView(classViewModel: classViewModel)
+                AddClassView(courseViewModel: courseViewModel)
             }
             .onAppear {
-                classViewModel.fetchClasses()
+                courseViewModel.fetchCourses()
                 assignmentsViewModel.fetchAssignments()
             }
         }

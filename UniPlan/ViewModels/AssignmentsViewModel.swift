@@ -9,11 +9,11 @@ import Foundation
 
 class AssignmentsViewModel: ObservableObject {
     @Published var assignments: [Assignment] = []
-    @Published var classes: [Class] = []
+    @Published var courses: [Course] = []
     
     init() {
         fetchAssignments()
-        fetchClasses()
+        fetchCourses()
     }
     
     func saveAssignments() {
@@ -36,16 +36,16 @@ class AssignmentsViewModel: ObservableObject {
         }
     }
     
-    func fetchClasses() {
+    func fetchCourses() {
         if let encoded = UserDefaults.standard.data(forKey: "classes") {
-            if let decoded = try? JSONDecoder().decode([Class].self, from: encoded) {
-                classes = decoded
+            if let decoded = try? JSONDecoder().decode([Course].self, from: encoded) {
+                courses = decoded
             }
         }
     }
     
-    func getClassForAssignment(_ assignment: Assignment) -> Class? {
-        return classes.first(where: { $0.id == assignment.classId })
+    func getClassForAssignment(_ assignment: Assignment) -> Course? {
+        return courses.first(where: { $0.id == assignment.classId })
     }
     
     func toggleAssignmentCompletion(assignmentId: UUID) {

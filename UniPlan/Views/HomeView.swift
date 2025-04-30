@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject private var classViewModel = ClassViewModel()
+    @StateObject private var courseViewModel = CourseViewModel()
     @StateObject private var assignmentsViewModel = AssignmentsViewModel()
     
     @State private var selectedCategory: Category = .today
@@ -77,7 +77,7 @@ struct HomeView: View {
             .edgesIgnoringSafeArea(.bottom)
             .background(Color("AppBackground"))
             .onAppear {
-                classViewModel.fetchClasses()
+                courseViewModel.fetchCourses()
             }
         }
     }
@@ -96,7 +96,7 @@ struct HomeView: View {
             }
             .padding(.horizontal)
             
-            if classViewModel.classes.isEmpty {
+            if courseViewModel.courses.isEmpty {
                 // Empty state
                 VStack(spacing: 16) {
                     Spacer()
@@ -117,24 +117,26 @@ struct HomeView: View {
             } else {
                 // Course cards from view model
                 LazyVStack(spacing: 16) {
-                    ForEach(classViewModel.classes) { classItem in
-                        let assignmentCount = assignmentsViewModel.assignments.filter { $0.classId == classItem.id }.count
+                    ForEach(courseViewModel.courses) { course in
+                        let assignmentCount = assignmentsViewModel.assignments.filter { $0.classId == course.id }.count
                         
                         NavigationLink(destination: ClassDetailView(
-                            classId: classItem.id,
-                            title: classItem.title,
-                            instructor: classItem.instructor,
-                            instructorEmail: classItem.instructorEmail,
+                            classId: course.id,
+                            title: course.title,
+                            code: course.code,
+                            instructor: course.instructor,
+                            instructorEmail: course.instructorEmail,
                             numberOfAssignments: assignmentCount
                         )) {
                             ClassCard(
-                                classId: classItem.id,
-                                title: classItem.title,
-                                instructor: classItem.instructor,
-                                instructorEmail: classItem.instructorEmail,
+                                classId: course.id,
+                                title: course.title,
+                                code: course.code,
+                                instructor: course.instructor,
+                                instructorEmail: course.instructorEmail,
                                 numberOfAssignments: assignmentCount,
-                                date: classItem.daysString,
-                                timeRange: classItem.timeRangeString
+                                date: course.daysString,
+                                timeRange: course.timeRangeString
                             )
                         }
                     }
@@ -220,7 +222,7 @@ struct HomeView: View {
             }
             .padding(.horizontal)
             
-            if classViewModel.classes.isEmpty {
+            if courseViewModel.courses.isEmpty {
                 // Empty state
                 VStack(spacing: 16) {
                     Spacer()
@@ -241,24 +243,26 @@ struct HomeView: View {
             } else {
                 // Course cards from view model
                 LazyVStack(spacing: 16) {
-                    ForEach(classViewModel.classes) { classItem in
-                        let assignmentCount = assignmentsViewModel.assignments.filter { $0.classId == classItem.id }.count
+                    ForEach(courseViewModel.courses) { course in
+                        let assignmentCount = assignmentsViewModel.assignments.filter { $0.classId == course.id }.count
                         
                         NavigationLink(destination: ClassDetailView(
-                            classId: classItem.id,
-                            title: classItem.title,
-                            instructor: classItem.instructor,
-                            instructorEmail: classItem.instructorEmail,
+                            classId: course.id,
+                            title: course.title,
+                            code: course.code,
+                            instructor: course.instructor,
+                            instructorEmail: course.instructorEmail,
                             numberOfAssignments: assignmentCount
                         )) {
                             ClassCard(
-                                classId: classItem.id,
-                                title: classItem.title,
-                                instructor: classItem.instructor,
-                                instructorEmail: classItem.instructorEmail,
+                                classId: course.id,
+                                title: course.title,
+                                code: course.code,
+                                instructor: course.instructor,
+                                instructorEmail: course.instructorEmail,
                                 numberOfAssignments: assignmentCount,
-                                date: classItem.daysString,
-                                timeRange: classItem.timeRangeString
+                                date: course.daysString,
+                                timeRange: course.timeRangeString
                             )
                         }
                     }

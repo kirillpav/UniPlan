@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AssignmentRow: View {
     var assignment: Assignment
-    var assignmentCourse: Class?
+    var assignmentCourse: Course?
     var toggleCompletion: () -> Void
     
     

@@ -3,6 +3,7 @@ import SwiftUI
 struct ClassCard: View {
     var classId: UUID
     var title: String
+    var code: String
     var instructor: String
     var instructorEmail: String
     var numberOfAssignments: Int
@@ -12,7 +13,7 @@ struct ClassCard: View {
     
     var body: some View {
         NavigationLink {
-            ClassDetailView(classId: classId, title: title, instructor: instructor, instructorEmail: instructorEmail, numberOfAssignments: numberOfAssignments)
+            ClassDetailView(classId: classId, title: title, code: code, instructor: instructor, instructorEmail: instructorEmail, numberOfAssignments: numberOfAssignments)
         } label: {
             VStack(alignment: .leading, spacing: 16) {
                 HStack {

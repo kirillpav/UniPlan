@@ -5,10 +5,11 @@ struct AddClassView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     
-    @ObservedObject var classViewModel: ClassViewModel
+    @ObservedObject var courseViewModel: CourseViewModel
     
     @State private var title: String = ""
     @State private var instructor: String = ""
+    @State private var code: String = ""
     @State private var instructorEmail: String = ""
     @State private var showError: Bool = false
     
@@ -30,7 +31,7 @@ struct AddClassView: View {
             
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
-                    Text("New Class")
+                    Text("New Course")
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(textColor)
@@ -40,6 +41,8 @@ struct AddClassView: View {
                         inputField(title: "Class Title", text: $title, placeholder: "e.g. Biology 101")
                         
                         inputField(title: "Instructor", text: $instructor, placeholder: "e.g. Dr. Smith")
+                        
+                        inputField(title: "Code", text: $code, placeholder: "CSC101")
                         
                         inputField(title: "Email", text: $instructorEmail, placeholder: "e.g. smith@university.edu")
                     }
@@ -196,9 +199,10 @@ struct AddClassView: View {
                                         Calendar.current.dateComponents([.year, .month, .day], from: firstDate))!
                                     fullEndTime = Calendar.current.date(bySettingHour: endTimeComponents.hour!, minute: endTimeComponents.minute!, second: 0, of: fullEndTime)!
                                     
-                                    classViewModel.addClass(Class(
+                                    courseViewModel.addCourse(Course(
                                         id: UUID(),
                                         title: title,
+                                        code: code,
                                         instructor: instructor,
                                         instructorEmail: instructorEmail,
                                         assignments: [],

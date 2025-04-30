@@ -7,9 +7,10 @@
 
 import Foundation
 
-struct Class: Identifiable, Codable {
+struct Course: Identifiable, Codable {
     let id: UUID
     var title: String
+    var code: String
     var instructor: String
     var instructorEmail: String
     var assignments: [Assignment]
@@ -40,9 +41,10 @@ struct Class: Identifiable, Codable {
     }
            
     
-    init(id: UUID, title: String, instructor: String, instructorEmail: String, assignments: [Assignment], startTime: Date, endTime: Date, date: Date, selectedDays: [Weekday], firstDayOfInstruction: Date, finalExam: Date) {
+    init(id: UUID, title: String, code: String, instructor: String, instructorEmail: String, assignments: [Assignment], startTime: Date, endTime: Date, date: Date, selectedDays: [Weekday], firstDayOfInstruction: Date, finalExam: Date) {
         self.id = id
         self.title = title
+        self.code = code
         self.instructor = instructor
         self.instructorEmail = instructorEmail
         self.assignments = assignments

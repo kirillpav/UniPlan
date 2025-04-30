@@ -12,9 +12,9 @@ struct Semester: Identifiable, Encodable {
     var title: String
     var startDate: Date
     var endDate: Date
-    var classes: [Class] // <- Will add later
+    var classes: [Course] // <- Will add later
     
-    init(id: UUID = UUID(), title: String, startDate: Date, endDate: Date, classes: [Class] = []) {
+    init(id: UUID = UUID(), title: String, startDate: Date, endDate: Date, classes: [Course] = []) {
         self.id = id
         self.title = title
         self.startDate = startDate
