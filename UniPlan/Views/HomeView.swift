@@ -6,6 +6,7 @@ struct HomeView: View {
     @StateObject private var assignmentsViewModel = AssignmentsViewModel()
     
     @State private var selectedCategory: Category = .today
+    @State private var showAddClassView: Bool = false
     
     // Enum for view selections
     enum Category: String, CaseIterable {
@@ -182,10 +183,12 @@ struct HomeView: View {
                         
                         
                         ForEach(assignmentsViewModel.assignments) { assignment in
-                            //                        let _ = assignmentsViewModel.assignments.filter { Calendar.current.isDate($0.dueDate, inSameDayAs: currentDate) }
+                            let _ = assignmentsViewModel.assignments.filter { Calendar.current.isDate($0.dueDate, inSameDayAs: currentDate) }
+                            
+                            let associatedClass = assignmentsViewModel.getClassForAssignment(assignment)
                             
                             if Calendar.current.isDate(assignment.dueDate, inSameDayAs: currentDate) {
-                                AssignmentRow(assignment: assignment) {
+                                AssignmentRow(assignment: assignment, assignmentCourse: associatedClass) {
                                     if let index = assignmentsViewModel.assignments.firstIndex(where: { $0.id == assignment.id }) {
                                         assignmentsViewModel.assignments[index].isCompleted.toggle()
                                         assignmentsViewModel.saveAssignments()
@@ -214,14 +217,27 @@ struct HomeView: View {
     }
     
     private var HomeCoursesView: some View {
+        
         VStack(spacing: 20) {
             HStack {
                 Text("Courses")
                     .font(.system(size: 32, weight: .bold))
                     .foregroundStyle(Color("AccentColor"))
+                
                 Spacer()
+                
+                Button(action: {
+                    showAddClassView = true
+                }) {
+                    Image(systemName: "plus")
+                        .font(.title)
+                        .padding()
+                }
             }
             .padding(.horizontal)
+            .sheet(isPresented: $showAddClassView) {
+                AddClassView(courseViewModel: courseViewModel)
+            }
             
             if courseViewModel.courses.isEmpty {
                 // Empty state
@@ -268,27 +284,28 @@ struct HomeView: View {
                         }
                     }
                 }
-                
             }
         }
-        
     }
     
     
-    
-    // Helper methods for formatting date and time
-    private func formatDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "d MMM, yy"
-        return formatter.string(from: date)
-    }
-    
-    private func formatTime(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "h:mm a"
-        return formatter.string(from: date)
-    }
 }
+
+
+
+// Helper methods for formatting date and time
+private func formatDate(_ date: Date) -> String {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "d MMM, yy"
+    return formatter.string(from: date)
+}
+
+private func formatTime(_ date: Date) -> String {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "h:mm a"
+    return formatter.string(from: date)
+}
+
 
 // Category pill component (unchanged)
 struct CategoryPill: View {
