@@ -27,14 +27,11 @@ struct AssignmentsView: View {
                         assignmentsViewModel.deleteAssignment(assignment)
                     } label: {
                         Label("Delete", systemImage: "trash")
+                            
                     }
                 }
             }
-//            .onDelete { indexSet in
-//                for index in indexSet {
-//                    let assignment = assignmentsViewModel.assignments[index]
-//                    assignmentsViewModel.deleteAssignment(assignment)
-//                }
+
         }
         .listStyle(PlainListStyle())
         .onAppear {
@@ -42,7 +39,6 @@ struct AssignmentsView: View {
         }
     }
 }
-
 
 struct AssignmentsView_Previews: PreviewProvider {
     static var previews: some View {

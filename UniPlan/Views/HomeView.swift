@@ -58,6 +58,7 @@ struct HomeView: View {
                         Spacer()
                     } else if selectedCategory == .assignments {
                         AssignmentsView()
+                            .padding()
                     } else {
                         upcomingView
                         Spacer()
@@ -214,7 +215,11 @@ struct HomeView: View {
                 
             }
         }
+        .onAppear {
+            assignmentsViewModel.fetchAssignments()
+        }
     }
+        
     
     private var HomeCoursesView: some View {
         

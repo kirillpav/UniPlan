@@ -34,7 +34,9 @@ struct Assignments: View {
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
+                            
                         }
+                        .padding(.bottom, 12)
                     }
                 }
             }

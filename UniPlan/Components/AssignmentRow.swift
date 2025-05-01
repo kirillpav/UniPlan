@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct AssignmentRow: View {
-    @ObservedObject var assignmentsViewModel = AssignmentsViewModel()
     
     var assignment: Assignment
     var assignmentCourse: Course?
@@ -64,13 +63,6 @@ struct AssignmentRow: View {
             RoundedRectangle(cornerRadius: 16)
                 .fill(Color("SecondaryColor"))
         )
-        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-            Button(role: .destructive) {
-                assignmentsViewModel.deleteAssignment(assignment)
-            } label: {
-                Label("Delete", systemImage: "trash")
-            }
-        }
     }
     
     // Format the due date
