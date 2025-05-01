@@ -10,10 +10,18 @@ import SwiftUI
 struct AssignmentsView: View {
     @StateObject var assignmentsViewModel = AssignmentsViewModel()
     
+    var filterPredicate: ((Assignment) -> Bool)? = nil
+    
+    init(filterPredicate: ((Assignment) -> Bool)? = nil) {
+        self.filterPredicate = filterPredicate
+    }
+    
     
     var body: some View {
         List {
-            ForEach(assignmentsViewModel.assignments) { assignment in
+            let filteredAssignments = filterPredicate != nil ? assignmentsViewModel.assignments.filter(filterPredicate!) : assignmentsViewModel.assignments
+            
+            ForEach(filteredAssignments) { assignment in
                 let associatedClass = assignmentsViewModel.getClassForAssignment(assignment)
                 
                 AssignmentRow(assignment: assignment, assignmentCourse: associatedClass) {
@@ -30,12 +38,21 @@ struct AssignmentsView: View {
                             
                     }
                 }
+                .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                    Button {
+                        assignmentsViewModel.toggleAssignmentCompletion(assignmentId: assignment.id)
+                    } label: {
+                        Label("Complete", systemImage: "checkmark.rectangle.stack")
+                    }
+                    .tint(.green)
+                }
             }
 
         }
         .listStyle(PlainListStyle())
         .onAppear {
             assignmentsViewModel.fetchCourses()
+            assignmentsViewModel.fetchAssignments()
         }
     }
 }

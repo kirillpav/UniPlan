@@ -58,7 +58,6 @@ struct HomeView: View {
                         Spacer()
                     } else if selectedCategory == .assignments {
                         AssignmentsView()
-                            .padding()
                     } else {
                         upcomingView
                         Spacer()
@@ -157,66 +156,13 @@ struct HomeView: View {
                 Text("Due Today")
                     .font(.system(size: 32, weight: .bold))
                     .foregroundStyle(Color("AccentColor"))
+                    .padding()
                 Spacer()
             }
-            .padding(.horizontal)
-            
-            ScrollView() {
-                if (assignmentsViewModel.assignments.isEmpty) {
-                    VStack(spacing: 16) {
-                        Spacer()
-                        
-                        Image(systemName: "calendar.badge.plus")
-                            .font(.system(size: 50))
-                            .foregroundColor(.gray.opacity(0.5))
-                            .padding()
-                        
-                        Text("No upcoming classes")
-                            .font(.title3)
-                            .foregroundColor(.gray)
-                        
-                        Spacer()
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 60)
-                } else {
-                    LazyVStack(spacing: 16) {
-                        
-                        
-                        ForEach(assignmentsViewModel.assignments) { assignment in
-                            let _ = assignmentsViewModel.assignments.filter { Calendar.current.isDate($0.dueDate, inSameDayAs: currentDate) }
-                            
-                            let associatedClass = assignmentsViewModel.getClassForAssignment(assignment)
-                            
-                            if Calendar.current.isDate(assignment.dueDate, inSameDayAs: currentDate) {
-                                AssignmentRow(assignment: assignment, assignmentCourse: associatedClass) {
-                                    if let index = assignmentsViewModel.assignments.firstIndex(where: { $0.id == assignment.id }) {
-                                        assignmentsViewModel.assignments[index].isCompleted.toggle()
-                                        assignmentsViewModel.saveAssignments()
-                                    }
-                                }
-                                .padding(.horizontal)
-                                .listRowSeparator(.hidden)
-                                .listRowBackground(Color.clear)
-                                .listRowInsets(EdgeInsets())
-                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                    Button(role: .destructive) {
-                                        assignmentsViewModel.deleteAssignment(assignment)
-                                    } label: {
-                                        Label("Delete", systemImage: "trash")
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
-                }
-                
-                
-            }
-        }
-        .onAppear {
-            assignmentsViewModel.fetchAssignments()
+            AssignmentsView(filterPredicate: { assignment in
+                Calendar.current.isDate(assignment.dueDate, inSameDayAs: currentDate)
+            })
+            .padding(.top, -15)
         }
     }
         

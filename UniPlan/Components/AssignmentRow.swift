@@ -16,53 +16,54 @@ struct AssignmentRow: View {
     
     
     var body: some View {
-        HStack(spacing: 16) {
-            // Completion circle
-            Button(action: toggleCompletion) {
-                ZStack {
-                    Circle()
-                        .strokeBorder(Color.black.opacity(0.6), lineWidth: 1.5)
-                        .frame(width: 24, height: 24)
-                    
-                    if assignment.isCompleted {
-                        Circle()
-                            .fill(Color.black.opacity(0.3))
-                            .frame(width: 18, height: 18)
+        VStack(spacing: 0) {
+            Divider()
+                .background(Color.white)
+                .frame(height: 1)
+            
+            HStack(spacing: 16) {
+                // Completion circle
+//                Button(action: toggleCompletion) {
+//                    ZStack {
+//                        Circle()
+//                            .strokeBorder(Color.white, lineWidth: 1.5)
+//                            .frame(width: 24, height: 24)
+//                        
+//                        if assignment.isCompleted {
+//                            Circle()
+//                                .fill(Color.black.opacity(0.3))
+//                                .frame(width: 18, height: 18)
+//                            
+//                        }
+//                    }
+//                }
+                
+                // Assignment details
+                HStack(spacing: 4) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(assignment.title)
+                            .font(.system(size: 18, weight: .medium))
+                            .foregroundColor(assignment.isCompleted ? Color("PrimaryColor") : .gray)
+                            .strikethrough(assignment.isCompleted)
                         
+                        if let course = assignmentCourse {
+                            Text(course.title)
+                                .font(.subheadline)
+                                .foregroundColor(Color("AccentColor"))
+                        }
                     }
-                }
-            }
-            
-            
-            // Assignment details
-            HStack(spacing: 4) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(assignment.title)
-                        .font(.system(size: 18, weight: .medium))
-                        .foregroundColor(assignment.isCompleted ? .black.opacity(0.5) : .black)
-                        .strikethrough(assignment.isCompleted)
                     
-                    if let course = assignmentCourse {
-                        Text(course.title)
-                            .font(.subheadline)
-                            .foregroundColor(.black.opacity(0.7))
-                    }
+                    Spacer()
+                    
+                    Text(formattedDueDate(assignment.dueDate))
+                        .font(.subheadline)
+                        .foregroundColor(Color("AccentColor"))
                 }
                 
                 Spacer()
-                
-                Text(formattedDueDate(assignment.dueDate))
-                    .font(.subheadline)
-                    .foregroundColor(.black.opacity(0.5))
             }
-            
-            Spacer()
+            .padding(16)
         }
-        .padding(16)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color("SecondaryColor"))
-        )
     }
     
     // Format the due date
